@@ -1,3 +1,0 @@
-/Users/nicholas/Desktop/EMMA/ESP32/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/Users/nicholas/Desktop/EMMA/ESP32/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Users/nicholas/Desktop/EMMA/ESP32/cmake-build-debug/CMakeFiles/ESP32.dir
