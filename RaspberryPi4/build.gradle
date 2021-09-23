@@ -15,6 +15,7 @@ repositories {
 }
 
 dependencies {
+    implementation 'com.fazecast:jSerialComm:2.7.0'
     implementation 'junit:junit:4.13.1'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
@@ -23,6 +24,7 @@ dependencies {
 jar {
     manifest {
         attributes "Main-Class": "Main"
+        attributes "Main-Class": "Test"
     }
 
     from {

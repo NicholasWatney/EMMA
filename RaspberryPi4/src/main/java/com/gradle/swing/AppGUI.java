@@ -5,7 +5,7 @@ package com.gradle.swing;
 import java.awt.*;
 import javax.swing.*;
 
-public class AppGUI {
+public abstract class AppGUI {
 
     private final int DEBUG = 1;
 
@@ -20,6 +20,22 @@ public class AppGUI {
     protected static void launchMainGUI() {
         MainGUI mainGUI = new MainGUI();
         mainGUI.buildGUI();
+    }
+
+    protected static JPanel getBorderPanel(JPanel inside, String title) {
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBorder(BorderFactory.createTitledBorder(title));
+        panel.add(inside);
+        return panel;
+    }
+
+    protected static JPanel getBorderPanel(JPanel inside, String title, Insets insets) {
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBorder(BorderFactory.createTitledBorder(title));
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.insets = insets;
+        panel.add(inside, constraints);
+        return panel;
     }
 
     protected static void setConstraints(GridBagConstraints constraints,
