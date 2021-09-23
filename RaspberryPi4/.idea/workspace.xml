@@ -1,58 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="TestPi4:jar" />
+    </artifacts-to-build>
+  </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a30cb016-f8e2-4a7c-a332-76cd6bd6647d" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries-with-intellij-classes.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ESP32/CMakeLists.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ESP32/cmake-build-debug/CMakeCache.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ESP32/cmake-build-debug/CMakeFiles/3.17.3/CMakeCCompiler.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ESP32/cmake-build-debug/CMakeFiles/3.17.3/CMakeCXXCompiler.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ESP32/cmake-build-debug/CMakeFiles/3.17.3/CMakeDetermineCompilerABI_C.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ESP32/cmake-build-debug/CMakeFiles/3.17.3/CMakeDetermineCompilerABI_CXX.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ESP32/cmake-build-debug/CMakeFiles/3.17.3/CMakeSystem.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ESP32/cmake-build-debug/CMakeFiles/3.17.3/CompilerIdC/CMakeCCompilerId.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ESP32/cmake-build-debug/CMakeFiles/3.17.3/CompilerIdC/CMakeCCompilerId.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ESP32/cmake-build-debug/CMakeFiles/3.17.3/CompilerIdCXX/CMakeCXXCompilerId.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ESP32/cmake-build-debug/CMakeFiles/3.17.3/CompilerIdCXX/CMakeCXXCompilerId.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ESP32/cmake-build-debug/CMakeFiles/CMakeDirectoryInformation.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ESP32/cmake-build-debug/CMakeFiles/CMakeError.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ESP32/cmake-build-debug/CMakeFiles/CMakeOutput.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ESP32/cmake-build-debug/CMakeFiles/ESP32.dir/CXX.includecache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ESP32/cmake-build-debug/CMakeFiles/ESP32.dir/DependInfo.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ESP32/cmake-build-debug/CMakeFiles/ESP32.dir/build.make" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ESP32/cmake-build-debug/CMakeFiles/ESP32.dir/cmake_clean.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ESP32/cmake-build-debug/CMakeFiles/ESP32.dir/depend.internal" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ESP32/cmake-build-debug/CMakeFiles/ESP32.dir/depend.make" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ESP32/cmake-build-debug/CMakeFiles/ESP32.dir/flags.make" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ESP32/cmake-build-debug/CMakeFiles/ESP32.dir/link.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ESP32/cmake-build-debug/CMakeFiles/ESP32.dir/main.cpp.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ESP32/cmake-build-debug/CMakeFiles/ESP32.dir/progress.make" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ESP32/cmake-build-debug/CMakeFiles/Makefile.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ESP32/cmake-build-debug/CMakeFiles/Makefile2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ESP32/cmake-build-debug/CMakeFiles/TargetDirectories.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ESP32/cmake-build-debug/CMakeFiles/clion-environment.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ESP32/cmake-build-debug/CMakeFiles/clion-log.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ESP32/cmake-build-debug/CMakeFiles/cmake.check_cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ESP32/cmake-build-debug/CMakeFiles/progress.marks" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ESP32/cmake-build-debug/ESP32" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ESP32/cmake-build-debug/ESP32.cbp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ESP32/cmake-build-debug/Makefile" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ESP32/cmake-build-debug/Testing/Temporary/LastTest.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ESP32/cmake-build-debug/cmake_install.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ESP32/main.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/RaspberryPi4.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ESP32/Main/Main.ino" beforeDir="false" afterPath="$PROJECT_DIR$/../ESP32/Main/Main.ino" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/6.8/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.8/executionHistory/executionHistory.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/6.8/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.8/executionHistory/executionHistory.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/6.8/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.8/fileHashes/fileHashes.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/6.8/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.8/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/6.8/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.8/fileHashes/resourceHashesCache.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/6.8/javaCompile/classAnalysis.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.8/javaCompile/classAnalysis.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/6.8/javaCompile/javaCompile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.8/javaCompile/javaCompile.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/6.8/javaCompile/taskHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.8/javaCompile/taskHistory.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/Test$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/Test.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/Test.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/AppGUI$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/AppGUI$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/AppGUI.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/AppGUI.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/MainGUI$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/MainGUI$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/MainGUI$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/MainGUI$3.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/MainGUI$4.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/MainGUI.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/MainGUI.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/distributions/RaspberryPi4-V1.0.tar" beforeDir="false" afterPath="$PROJECT_DIR$/build/distributions/RaspberryPi4-V1.0.tar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/distributions/RaspberryPi4-V1.0.zip" beforeDir="false" afterPath="$PROJECT_DIR$/build/distributions/RaspberryPi4-V1.0.zip" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/libs/RaspberryPi4-V1.0.jar" beforeDir="false" afterPath="$PROJECT_DIR$/build/libs/RaspberryPi4-V1.0.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/scripts/RaspberryPi4" beforeDir="false" afterPath="$PROJECT_DIR$/build/scripts/RaspberryPi4" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/scripts/RaspberryPi4.bat" beforeDir="false" afterPath="$PROJECT_DIR$/build/scripts/RaspberryPi4.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/tmp/compileJava/source-classes-mapping.txt" beforeDir="false" afterPath="$PROJECT_DIR$/build/tmp/compileJava/source-classes-mapping.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/tmp/jar/MANIFEST.MF" beforeDir="false" afterPath="$PROJECT_DIR$/build/tmp/jar/MANIFEST.MF" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Test.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/gradle/swing/AppGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/gradle/swing/AppGUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/gradle/swing/MainGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/gradle/swing/MainGUI.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -126,22 +116,47 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="project.structure.last.edited" value="Modules" />
-    <property name="project.structure.proportion" value="0.0" />
-    <property name="project.structure.side.proportion" value="0.0" />
+    <property name="project.structure.last.edited" value="Libraries" />
+    <property name="project.structure.proportion" value="0.24019025" />
+    <property name="project.structure.side.proportion" value="0.1552795" />
     <property name="restartRequiresConfirmation" value="false" />
+    <property name="settings.editor.selected.configurable" value="tv.twelvetone.gradle.plugin.navigation.settings.SettingsConfig" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/build/libs" />
+    </key>
   </component>
   <component name="RunManager" selected="Gradle.RaspberryPi4 [run]">
-    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="Main" />
+    <configuration name="Test" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Test" />
       <module name="RaspberryPi4.main" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="Test" />
+    <configuration name="UART" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.gradle.backend.UART" />
       <module name="RaspberryPi4.main" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.gradle.backend.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="ArquillianTestNG" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="CLASS" />
+      <properties />
+      <listeners />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -214,8 +229,8 @@
         <item itemvalue="Gradle.RaspberryPi4 [run]" />
         <item itemvalue="Gradle.RaspberryPi4 [build]" />
         <item itemvalue="Gradle.RaspberryPi4 [jar]" />
+        <item itemvalue="Application.UART" />
         <item itemvalue="Application.Test" />
-        <item itemvalue="Application.Main" />
       </list>
     </recent_temporary>
   </component>
@@ -229,7 +244,17 @@
       <updated>1630452209573</updated>
       <workItem from="1630452213869" duration="18444000" />
       <workItem from="1630518845514" duration="2039000" />
-      <workItem from="1630586741486" duration="360000" />
+      <workItem from="1630586741486" duration="626000" />
+      <workItem from="1630623012779" duration="2058000" />
+      <workItem from="1631069757698" duration="4054000" />
+      <workItem from="1631125619114" duration="6154000" />
+      <workItem from="1631230036444" duration="1160000" />
+      <workItem from="1631729529549" duration="4276000" />
+      <workItem from="1631774337808" duration="1131000" />
+      <workItem from="1631898953823" duration="2119000" />
+      <workItem from="1632364159534" duration="2530000" />
+      <workItem from="1632373219556" duration="365000" />
+      <workItem from="1632373591803" duration="26576000" />
     </task>
     <servers />
   </component>
@@ -252,9 +277,9 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/Main.java</url>
-          <line>7</line>
-          <option name="timeStamp" value="4" />
+          <url>file://$PROJECT_DIR$/src/main/java/com/gradle/backend/UART.java</url>
+          <line>18</line>
+          <option name="timeStamp" value="17" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
