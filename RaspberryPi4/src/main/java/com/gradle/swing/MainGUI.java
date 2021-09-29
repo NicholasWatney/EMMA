@@ -35,10 +35,11 @@ public class MainGUI extends AppGUI {
         mainFrame.setSize(800, 800);
         mainFrame.setLocationRelativeTo(null);
         mainFrame.setExtendedState(Frame.MAXIMIZED_BOTH);
-        mainFrame.setUndecorated(true);
+        mainFrame.setUndecorated(false);
         mainFrame.setVisible(true);
         UART uart = new UART();
         Thread thread = uart.createReadUARTThread();
+//        uart.readUART();
         thread.start();
         initializeAndStartTimer();
     }

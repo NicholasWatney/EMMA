@@ -4,30 +4,40 @@ import com.fazecast.jSerialComm.*;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.HashSet;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
+import java.util.*;
+import java.nio.CharBuffer;
+import java.nio.ByteBuffer;
 
 public class UART {
 
     public SerialPort comPort;
     public Map<String, Object> dataMap;
+    public static UART uart;
 
     public UART() {
-
+        uart = this;
         String os = System.getProperty("os.name");
-        String portName = "";
+        ArrayList<String> portNames = new ArrayList<String>();
         if (os.equals("Mac OS X")) {
-            portName = "cu.SLAB_USBtoUART";
+            portNames.add("cu.SLAB_USBtoUART");
         } else if (os.equals("Linux")) {
-            portName = "ttyUSB0";
+            portNames.add("ttyUSB0");
+            portNames.add("ttyUSB1");
         }
 
-        for (SerialPort port : SerialPort.getCommPorts()) {
-            if (port.getSystemPortName().equals(portName)) {
-                comPort = port;
+        for (String portName : portNames) {
+
+            if (comPort != null) {
                 break;
+            }
+
+            for (SerialPort port : SerialPort.getCommPorts()) {
+                if (port.getSystemPortName().equals(portName)) {
+                    comPort = port;
+                    break;
+                }
             }
         }
 
@@ -35,7 +45,8 @@ public class UART {
         if (comPort == null || !comPort.openPort()) {
             return;
         }
-        comPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 0, 0);
+//        comPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 0, 0);
+        comPort.setBaudRate(57600);
     }
 
     public void initializeDataSet() {
@@ -46,7 +57,6 @@ public class UART {
     }
 
     public void updateReader(String parsed) {
-        System.out.println(parsed); //
         try {
             String[] parsedList = parsed.split(":");
             String label = parsedList[0].strip();
@@ -59,9 +69,33 @@ public class UART {
                     temperatureSensor.setTemperatureReading(Double.parseDouble(value));
                     temperatureSensor.updateFPS();
                     temperatureSensor.updateJLabel();
+                    Thread.sleep(100);
                 }
             }
         } catch (Exception e) {
+        }
+    }
+
+
+    static byte[] toBytes(char[] chars) {
+        CharBuffer charBuffer = CharBuffer.wrap(chars);
+        ByteBuffer byteBuffer = Charset.forName("UTF-8").encode(charBuffer);
+        byte[] bytes = Arrays.copyOfRange(byteBuffer.array(),
+                byteBuffer.position(), byteBuffer.limit());
+        Arrays.fill(byteBuffer.array(), (byte) 0);
+        return bytes;
+    }
+
+    public static void writeUART(String message) {
+        SerialPort comPort = uart.comPort;
+        if (comPort == null) {
+            return;
+        }
+        OutputStream out = comPort.getOutputStream();
+        try {
+            out.write(toBytes(message.toCharArray()));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -73,14 +107,17 @@ public class UART {
         StringBuffer parsed = new StringBuffer();
         InputStream in = comPort.getInputStream();
 
+        char parse = ' ';
         try {
             while (true) {
-                char parse = (char) in.read();
-                if (parse == ';') {
-                    updateReader(parsed.toString());
-                    parsed = new StringBuffer("");
-                    continue;
-                }
+                try {
+                    parse = (char) in.read();
+                    if (parse == ';') {
+                        updateReader(parsed.toString());
+                        parsed = new StringBuffer("");
+                        continue;
+                    }
+                } catch (SerialPortTimeoutException spte) {}
                 parsed.append(parse);
             }
         } catch (Exception e) {
