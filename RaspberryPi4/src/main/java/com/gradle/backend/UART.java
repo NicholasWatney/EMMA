@@ -2,7 +2,6 @@ package com.gradle.backend;
 
 import com.fazecast.jSerialComm.*;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
@@ -45,7 +44,7 @@ public class UART {
         if (comPort == null || !comPort.openPort()) {
             return;
         }
-//        comPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 0, 0);
+        comPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 0, 0);
         comPort.setBaudRate(57600);
     }
 
@@ -58,6 +57,7 @@ public class UART {
 
     public void updateReader(String parsed) {
         try {
+            System.out.println(parsed);
             String[] parsedList = parsed.split(":");
             String label = parsedList[0].strip();
             String value = parsedList[1].strip();
@@ -69,10 +69,10 @@ public class UART {
                     temperatureSensor.setTemperatureReading(Double.parseDouble(value));
                     temperatureSensor.updateFPS();
                     temperatureSensor.updateJLabel();
-                    Thread.sleep(100);
                 }
             }
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

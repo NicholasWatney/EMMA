@@ -11,23 +11,24 @@ public class Concurrent extends MainGUI {
     private JLabel concurrentLabel;
     private long concurrentTime;
     private static int concurrentCount = 0;
+    private int concurrentNumber;
     private double fps;
     private static ArrayList<Concurrent> concurrentList = new ArrayList<>();
 
     public Concurrent() {
-        concurrentCount++;
+        concurrentNumber = ++concurrentCount;
         fps = (1000 / SPEED) / Math.pow(2, concurrentCount - 1);
         concurrentReading = 0;
 
         concurrentLabel = new JLabel(String.format("Random Process %d (%.1fFPS): %d",
-                concurrentCount, fps, concurrentReading));
+                concurrentNumber, fps, concurrentReading));
         concurrentTime = 0;
         concurrentList.add(this);
     }
 
     public void updateJLabel() {
         concurrentLabel.setText(String.format("Random Process %d (%.0fFPS): %d",
-                concurrentCount, fps, concurrentReading));
+                concurrentNumber, fps, concurrentReading));
     }
 
     public JLabel getConcurrentLabel() {

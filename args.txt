@@ -1,0 +1,1 @@
+java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000 -cp jSerialComm-2.7.0.jar:RaspberryPi4-V1.0.jar Main
