@@ -34,7 +34,13 @@ public class Temperature {
     }
 
     public void updateFPS() {
-        fps = 1000.0 / updateAndGetTimeDifference();
+        long timeDifference = updateAndGetTimeDifference();
+        if (timeDifference != 0) {
+            fps = 1000.0 / timeDifference;
+        }
+//        if (fps > 100.0f) {
+//            fps = 99.90;
+//        }
     }
 
     public JLabel getTemperatureLabel() {

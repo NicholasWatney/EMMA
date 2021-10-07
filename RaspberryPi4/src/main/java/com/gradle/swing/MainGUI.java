@@ -9,7 +9,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 public class MainGUI extends AppGUI {
 
@@ -35,11 +34,10 @@ public class MainGUI extends AppGUI {
         mainFrame.setSize(800, 800);
         mainFrame.setLocationRelativeTo(null);
         mainFrame.setExtendedState(Frame.MAXIMIZED_BOTH);
-        mainFrame.setUndecorated(false);
+        mainFrame.setUndecorated(true);
         mainFrame.setVisible(true);
         UART uart = new UART();
         Thread thread = uart.createReadUARTThread();
-//        uart.readUART();
         thread.start();
         initializeAndStartTimer();
     }
@@ -62,11 +60,11 @@ public class MainGUI extends AppGUI {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.insets = new Insets(0, 40, 0, 40);
-        setConstraints(constraints, 0, 0, GridBagConstraints.CENTER);
+        setConstraints(constraints, 0, 0, GridBagConstraints.FIRST_LINE_START);
         panel.add(new Temperature().getTemperatureLabel(), constraints);
-        setConstraints(constraints, 0, 1, GridBagConstraints.CENTER);
+        setConstraints(constraints, 0, 1, GridBagConstraints.FIRST_LINE_START);
         panel.add(new Temperature().getTemperatureLabel(), constraints);
-        setConstraints(constraints, 0, 2, GridBagConstraints.CENTER);
+        setConstraints(constraints, 0, 2, GridBagConstraints.FIRST_LINE_START);
         panel.add(new Temperature().getTemperatureLabel(), constraints);
         return panel;
     }
@@ -75,12 +73,12 @@ public class MainGUI extends AppGUI {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.insets = new Insets(20, 0, 0, 0);
-        setConstraints(constraints, 0, 0, GridBagConstraints.CENTER);
+        setConstraints(constraints, 0, 0, GridBagConstraints.FIRST_LINE_START);
         panel.add(new Concurrent().getConcurrentLabel(), constraints);
         constraints.insets = new Insets(0, 0, 0, 0);
-        setConstraints(constraints, 0, 1, GridBagConstraints.CENTER);
+        setConstraints(constraints, 0, 1, GridBagConstraints.FIRST_LINE_START);
         panel.add(new Concurrent().getConcurrentLabel(), constraints);
-        setConstraints(constraints, 0, 2, GridBagConstraints.CENTER);
+        setConstraints(constraints, 0, 2, GridBagConstraints.FIRST_LINE_START);
         constraints.insets = new Insets(0, 0, 20, 0);
         panel.add(new Concurrent().getConcurrentLabel(), constraints);
         return panel;
@@ -114,7 +112,7 @@ public class MainGUI extends AppGUI {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 difference();
-                //Concurrent.updateConcurrent();
+                Concurrent.updateConcurrent();
             }
         };
     }

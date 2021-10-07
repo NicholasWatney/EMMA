@@ -1,6 +1,5 @@
 package com.gradle.swing;
 
-import org.junit.runner.OrderWith;
 
 import javax.swing.*;
 import java.awt.*;
@@ -28,6 +27,8 @@ public class AbortGUI extends AppGUI {
         abortFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         abortFrame.setSize(250, 150);
         abortFrame.setLocationRelativeTo(null);
+        abortFrame.setExtendedState(Frame.MAXIMIZED_BOTH);
+        abortFrame.setUndecorated(true);
         abortFrame.setVisible(true);
         initializeAndStartTimer();
     }
