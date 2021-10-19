@@ -6,7 +6,8 @@
 
 #define LM1 36
 #define LM2 39
-#define ONE_WIRE_BUS 23
+
+#define DS 23
 
 #include <string>
 #include <sstream>
@@ -38,7 +39,7 @@ int16_t dallas(int x, byte start)
 
 #include <DallasTemperature.h>
 
-OneWire oneWire(ONE_WIRE_BUS);
+OneWire oneWire(DS);
 DallasTemperature sensors(&oneWire);
 
 boolean led1 = false;
@@ -135,12 +136,12 @@ void process(std::string parsed)
   }
 }
 
-#define LM35DELAY 50
+#define LM35_DELAY 50
 unsigned long clockLM35 = 0;
 void updateLM35()
 {
   clockLM35 += timeDifference;
-  if (clockLM35 >= LM35DELAY)
+  if (clockLM35 >= LM35_DELAY)
   {
     int reading1 = analogRead(LM1);
     float temp1 = reading1 / 5000.0 * 155; 
@@ -148,30 +149,38 @@ void updateLM35()
     float temp2 = reading2 / 5000.0 * 155;
     addMessage("T1:" + toString(temp1));
     addMessage("T2:" + toString(temp2));
-    clockLM35 = clockLM35 % LM35DELAY;
+    clockLM35 = clockLM35 % LM35_DELAY;
   }
 }
 
-#define TEMPDELAY 750 // >= 750
+#define TEMP_DELAY 750 // >= 750
 unsigned long tempClock = 0;
 void updateDS18B20()
 {
   tempClock += timeDifference;
-  if (tempClock >= TEMPDELAY)
+  if (tempClock >= TEMP_DELAY)
   {
-    float temp3 = sensors.getTempCByIndex(0);
+    float DS_temp1 = sensors.getTempCByIndex(0);
+    float DS_temp2 = sensors.getTempCByIndex(1);
+    float DS_temp3 = sensors.getTempCByIndex(2);
+    float DS_temp4 = sensors.getTempCByIndex(3);
+    
     sensors.requestTemperatures();
-    addMessage("T3:" + toString(temp3));
-    tempClock = tempClock % TEMPDELAY;
+    addMessage("T1:" + toString(DS_temp1));
+    addMessage("T2:" + toString(DS_temp2));
+    addMessage("T3:" + toString(DS_temp3));
+    addMessage("T4:" + toString(DS_temp4));
+    tempClock = tempClock % TEMP_DELAY;
   }
 }
 
-#define READDELAY 100
+#define READ_DELAY 100
 std::string parsed = "";
-int readCounter = 0;
+unsigned long readClock = 0;
 void updateRead()
 {
-  if (readCounter % READDELAY == 0)
+  readClock += timeDifference;
+  if (readClock % READ_DELAY == 0)
   {
     while (Serial.available() > 0)
     {
@@ -183,7 +192,7 @@ void updateRead()
         parsed = "";
       }
     }
-    readCounter = 0;
+    readClock = readClock % READ_DELAY;
   }
 }
 
@@ -195,6 +204,7 @@ void timeClock()
 }
 
 DeviceAddress tempDeviceAddress;
+int numOfDevices;
 int resolution = 12;
 void setup()
 {
@@ -203,16 +213,20 @@ void setup()
   pinMode(LED2, OUTPUT);
   pinMode(LED3, OUTPUT);
   pinMode(LED4, OUTPUT);
+  
+
   sensors.begin();
-  sensors.getAddress(tempDeviceAddress, 0);
-  sensors.setResolution(tempDeviceAddress, resolution);
+  sensors.requestTemperatures();
+  sensors.getAddress(tempDeviceAddress, 0); sensors.setResolution(tempDeviceAddress, resolution);
+  sensors.getAddress(tempDeviceAddress, 1); sensors.setResolution(tempDeviceAddress, resolution);
+  sensors.getAddress(tempDeviceAddress, 2); sensors.setResolution(tempDeviceAddress, resolution);
+  sensors.getAddress(tempDeviceAddress, 3); sensors.setResolution(tempDeviceAddress, resolution);
   sensors.setWaitForConversion(false);
 }
 
 void loop()
 {
   timeClock();
-  updateLM35();
   updateDS18B20();
   messageFlush();
   updateRead();
