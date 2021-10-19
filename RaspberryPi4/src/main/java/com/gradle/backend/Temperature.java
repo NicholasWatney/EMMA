@@ -38,9 +38,6 @@ public class Temperature {
         if (timeDifference != 0) {
             fps = 1000.0 / timeDifference;
         }
-//        if (fps > 100.0f) {
-//            fps = 99.90;
-//        }
     }
 
     public JLabel getTemperatureLabel() {

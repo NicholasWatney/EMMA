@@ -18,25 +18,29 @@
       <change beforePath="$PROJECT_DIR$/.gradle/6.8/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.8/fileHashes/resourceHashesCache.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/6.8/javaCompile/classAnalysis.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.8/javaCompile/classAnalysis.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/6.8/javaCompile/javaCompile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.8/javaCompile/javaCompile.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/6.8/javaCompile/taskHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.8/javaCompile/taskHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/checksums/md5-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/md5-checksums.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/checksums/sha1-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/sha1-checksums.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/gradle/backend/Concurrent$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/gradle/backend/Concurrent$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/gradle/backend/Concurrent.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/gradle/backend/Concurrent.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/gradle/backend/Temperature.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/gradle/backend/Temperature.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/gradle/backend/UART$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/gradle/backend/UART$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/gradle/backend/UART.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/gradle/backend/UART.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/AbortGUI$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/AbortGUI$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/AbortGUI$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/AbortGUI$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/AbortGUI$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/AbortGUI$3.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/AbortGUI.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/AbortGUI.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/AppGUI$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/AppGUI$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/AppGUI.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/AppGUI.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/MainGUI$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/MainGUI$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/MainGUI.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/MainGUI.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/distributions/RaspberryPi4-V1.0.tar" beforeDir="false" afterPath="$PROJECT_DIR$/build/distributions/RaspberryPi4-V1.0.tar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/distributions/RaspberryPi4-V1.0.zip" beforeDir="false" afterPath="$PROJECT_DIR$/build/distributions/RaspberryPi4-V1.0.zip" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/libs/RaspberryPi4-V1.0.jar" beforeDir="false" afterPath="$PROJECT_DIR$/build/libs/RaspberryPi4-V1.0.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/scripts/RaspberryPi4" beforeDir="false" afterPath="$PROJECT_DIR$/build/scripts/RaspberryPi4" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/scripts/RaspberryPi4.bat" beforeDir="false" afterPath="$PROJECT_DIR$/build/scripts/RaspberryPi4.bat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/tmp/compileJava/source-classes-mapping.txt" beforeDir="false" afterPath="$PROJECT_DIR$/build/tmp/compileJava/source-classes-mapping.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/gradle/backend/Concurrent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/gradle/backend/Concurrent.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/gradle/backend/Temperature.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/gradle/backend/Temperature.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/gradle/backend/UART.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/gradle/backend/UART.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/gradle/swing/AbortGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/gradle/swing/AbortGUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/gradle/swing/AppGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/gradle/swing/AppGUI.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/gradle/swing/MainGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/gradle/swing/MainGUI.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -134,18 +138,19 @@
     <configuration name="Main" type="Application" factoryName="Application" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Main" />
       <module name="RaspberryPi4.main" />
-      <option name="VM_PARAMETERS" value="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+    <configuration default="true" type="ArquillianTestNG" factoryName="" nameIsGenerated="true">
       <option name="arquillianRunConfiguration">
         <value>
           <option name="containerStateName" value="" />
         </value>
       </option>
-      <option name="TEST_OBJECT" value="class" />
+      <option name="TEST_OBJECT" value="CLASS" />
+      <properties />
+      <listeners />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -258,9 +263,9 @@
     <recent_temporary>
       <list>
         <item itemvalue="Gradle.RaspberryPi4 [jar]" />
+        <item itemvalue="Gradle.RaspberryPi4 [testClasses]" />
         <item itemvalue="Gradle.RaspberryPi4 [build]" />
         <item itemvalue="Gradle.RaspberryPi4 [run]" />
-        <item itemvalue="Gradle.RaspberryPi4 [testClasses]" />
       </list>
     </recent_temporary>
   </component>
@@ -291,7 +296,10 @@
       <workItem from="1632942816515" duration="991000" />
       <workItem from="1632945280257" duration="512000" />
       <workItem from="1633043262693" duration="666000" />
-      <workItem from="1633541709889" duration="2818000" />
+      <workItem from="1633541709889" duration="3372000" />
+      <workItem from="1633650109130" duration="13778000" />
+      <workItem from="1634261352249" duration="2571000" />
+      <workItem from="1634598140586" duration="12154000" />
     </task>
     <servers />
   </component>
@@ -313,10 +321,13 @@
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
+        <line-breakpoint enabled="true" type="java-method">
           <url>file://$PROJECT_DIR$/src/main/java/com/gradle/backend/UART.java</url>
-          <line>102</line>
-          <option name="timeStamp" value="6" />
+          <line>147</line>
+          <properties class="com.gradle.backend.UART" method="restartESP32">
+            <option name="EMULATED" value="true" />
+          </properties>
+          <option name="timeStamp" value="35" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

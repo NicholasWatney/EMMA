@@ -4,6 +4,8 @@ package com.gradle.swing;
 
 import java.awt.*;
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.TitledBorder;
 
 public abstract class AppGUI {
 
@@ -11,6 +13,8 @@ public abstract class AppGUI {
 
     protected JFrame abortFrame;
     protected JFrame mainFrame;
+
+    protected static TitledBorder mainBorder;
 
     protected static void launchAbortScreen() {
         AbortGUI abortScreen = new AbortGUI();
@@ -30,6 +34,29 @@ public abstract class AppGUI {
     }
 
     protected static JPanel getBorderPanel(JPanel inside, String title, Insets insets) {
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBorder(BorderFactory.createTitledBorder(title));
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.insets = insets;
+        panel.add(inside, constraints);
+        return panel;
+    }
+
+    protected static JPanel getMainBorderPanel(JPanel inside, String title, Insets insets,
+                                           int titleJustification) {
+        JPanel panel = new JPanel(new GridBagLayout());
+        mainBorder = BorderFactory.createTitledBorder(title);
+        mainBorder.setTitleJustification(titleJustification);
+        panel.setBorder(mainBorder);
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.insets = insets;
+        panel.add(inside, constraints);
+        return panel;
+    }
+
+    protected static JPanel getBorderPanel(JPanel inside, String title, Insets insets,
+                                           Border border, int titleJusitification, int titlePosition,
+                                           Font titleFont, Color titleColor) {
         JPanel panel = new JPanel(new GridBagLayout());
         panel.setBorder(BorderFactory.createTitledBorder(title));
         GridBagConstraints constraints = new GridBagConstraints();
