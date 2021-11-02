@@ -13,12 +13,14 @@ import java.nio.ByteBuffer;
 
 public class UART {
 
+    public Pi pi;
     public SerialPort comPort;
     public Map<String, Object> dataMap;
     public static UART uart;
+    public static String os;
 
     private boolean connectToESP32() {
-        String os = System.getProperty("os.name");
+        os = System.getProperty("os.name");
         ArrayList<String> portNames = new ArrayList<>();
         if (os.equals("Mac OS X")) {
             portNames.add("cu.SLAB_USBtoUART");
@@ -45,6 +47,7 @@ public class UART {
         if (comPort == null || !comPort.openPort()) {
             return false;
         }
+
         comPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 0, 0);
         comPort.setBaudRate(57600);
         return true;
@@ -84,6 +87,7 @@ public class UART {
 
     public UART() {
         uart = this;
+        pi = new Pi();
     }
 
     public void initializeDataSet() {
@@ -94,32 +98,33 @@ public class UART {
     }
 
     public void updateReader(String parsed) {
-        try {
-            String[] parsedList = parsed.split(":");
-            String label = "";
-            String value = "";
-            try {
-                label = parsedList[0].strip();
-                value = parsedList[1].strip();
-            } catch (ArrayIndexOutOfBoundsException aioobe) {
-                System.err.println("ArrayIndexOutOfBoundsException: high stream" +
-                        " not parseable characters detected and filtered out.");
-                parsed = "";
-            }
+        String[] parsedList = parsed.split(":");
 
-            Object sensor = dataMap.get(label);
-            if (sensor != null) {
-                if ("com.gradle.backend.Temperature".equals(sensor.getClass().getName())) {
-                    Temperature temperatureSensor = (Temperature) sensor;
-                    temperatureSensor.setTemperatureReading(Double.parseDouble(value));
-                    temperatureSensor.updateFPS();
-                    temperatureSensor.updateJLabel();
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (parsedList.length != 2) {
+            return;
         }
-        System.out.println(parsed);
+
+        String label = "";
+        String value = "";
+        label = parsedList[0].strip();
+        value = parsedList[1].strip();
+        parsed = "";
+
+        Object sensor = dataMap.get(label);
+        if (sensor != null) {
+            if ("com.gradle.backend.Temperature".equals(sensor.getClass().getName())) {
+                Temperature temperatureSensor = (Temperature) sensor;
+                try {
+                    Double getTemperatureValue = Double.parseDouble(value);
+                } catch (NumberFormatException nfe) {
+                    return;
+                }
+                temperatureSensor.setTemperatureReading(Double.parseDouble(value));
+//                temperatureSensor.updateFPS();
+                temperatureSensor.updateAvgFps();
+                temperatureSensor.updateJLabel();
+            }
+        }
     }
 
 
@@ -147,10 +152,30 @@ public class UART {
 
     private void restartESP32() {
         try {
-            Thread.sleep(500);
+            pi.resetPin.off();
+            Thread.sleep(100);
+            pi.resetPin.on();
+            Thread.sleep(200);
+
+            comPort.closePort();
+            if (!comPort.openPort()) {
+                return;
+            }
+
         } catch (InterruptedException e) {
             System.err.println("InterruptedException: Thread to restart ESP32" +
                     " interrupted while sleeping.");
+        }
+    }
+
+    private void nullifyEverything() {
+        for (String key : dataMap.keySet()) {
+            Object sensor = dataMap.get(key);
+            if ("com.gradle.backend.Temperature".equals(sensor.getClass().getName())) {
+                Temperature temperatureSensor = (Temperature) sensor;
+                temperatureSensor.nullifyFps();
+                temperatureSensor.updateJLabel();
+            }
         }
     }
 
@@ -166,63 +191,95 @@ public class UART {
 
         int consecutiveSleepCount = 0;
         int bufferCount = 0;
-        boolean attemptReconnection = false;
+        int connectCount = 0;
+        int parseableCount = 0;
         while (true) {
 
             try {
                 bufferCount = in.available();
             } catch (IOException ioe) {
-                if (attemptReconnection == false) {
-                    System.err.println("IOException: Error reading buffer size" +
-                            " of inputStream.\n" +
-                            "Attempting to reconnect to: " + uart.comPort);
-                    attemptReconnection = true;
-                } else if (attemptReconnection == true) {
-                    if (connectToESP32()) {
-                        attemptReconnection = false;
-                    }
+
+                ++connectCount;
+                if (connectCount == 1) {
+                    nullifyEverything();
+                    System.out.println("Attempting to reconnect to: " + uart.comPort + "...");
                 }
+
+                if (connectCount > 0) {
+                    connectToESP32();
+                }
+
                 try {
                     Thread.sleep(100);
-                } catch(InterruptedException ie) {
+                } catch (InterruptedException ie) {
                     ie.printStackTrace();
                 }
+
+                continue;
             }
 
-            if (bufferCount == 0) {
+            if (connectCount > 0) {
+                connectCount = 0;
+                System.out.println("Connected to: " + uart.comPort + " successfully!");
+            }
+
+            if (bufferCount <= 0) {
+
                 ++consecutiveSleepCount;
+                if (consecutiveSleepCount == 20) {
+                    System.err.println("Attempting to restart ESP32...");
+                    restartESP32();
+                    continue;
+                }
+
                 try {
                     Thread.sleep(100);
-                } catch (InterruptedException ioe) {
-                    System.err.println("InterruptedException: Thread interrupted while \"sleeping\"." +
-                            " Thread is waiting for input stream to reinitialize.");
-                }
-                if (consecutiveSleepCount == 20) { // 2000 milliseconds of no response
-                    System.err.println("UART Bus silent for more than 2000 milliseconds." +
-                            "\nRestarting ESP32.");
-                    restartESP32();
+                } catch (InterruptedException ie) {
+                    ie.printStackTrace();
                 }
                 continue;
             }
-            boolean parseableAttempt = false;
+
             while (bufferCount-- > 0) {
-                consecutiveSleepCount = 0;
+
+                if (consecutiveSleepCount >= 20) {
+                    System.err.println("Restarted ESP32 successfully!");
+                }
+
+                if (consecutiveSleepCount > 0) {
+                    consecutiveSleepCount = 0;
+                }
+
                 try {
                     parse = (char) in.read();
-                    if (!isParseableLetterOrDigit(parse)) {
-                        if (!parseableAttempt) {
-                            System.err.println("InputStream character is not parseable." +
-                                    "\nESP32 UART bus corrupted. Restarting ESP32");
-                            restartESP32();
-                            parseableAttempt = true;
-                        }
+                } catch (SerialPortIOException spioe) {
+                    continue;
+                } catch (SerialPortTimeoutException spte) {
+                    continue;
+                } catch (IOException ioe) {
+                    ioe.printStackTrace();
+                }
+
+                if (!isParseableLetterOrDigit(parse)) {
+                    ++parseableCount;
+
+                    if (parseableCount == 1) {
+                        System.out.println("Not parseable character. Restarting ESP32...");
                     }
-                } catch (IOException e) {
-                    System.err.println("IOException: Error reading a character from the inputStream.");
+
+                    if (parseableCount > 0) {
+                        restartESP32();
+                    }
+
+                    continue;
+                }
+
+                if (parseableCount > 0) {
+                    parseableCount = 0;
+                    System.out.println("Restarted ESP32 successfully!");
                 }
 
                 if (parse == ';') {
-                    parseableAttempt = false;
                     updateReader(parsed.toString());
                     parsed = new StringBuffer("");
                     continue;
@@ -238,7 +295,8 @@ public class UART {
                 (character >= 'A' && character <= 'Z') ||
                 (character >= '0' && character <= '9') ||
                 (character == ':') || (character == ';') ||
-                (character == '.') || (character == '\n'));
+                (character == '.') || (character == '\n') ||
+                (character == '-'));
     }
 
 
@@ -250,12 +308,6 @@ public class UART {
                 readUART();
             }
         }, "UART Thread");
-    }
-
-    public static void main(String[] args) {
-        UART uart = new UART();
-        Thread thread = uart.createReadUARTThread();
-        thread.start();
     }
 
 }

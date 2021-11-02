@@ -67,7 +67,7 @@ goto fail
 :execute
 @rem Setup the command line
 
-set CLASSPATH=%APP_HOME%\lib\RaspberryPi4-V1.0.jar;%APP_HOME%\lib\jSerialComm-2.7.0.jar;%APP_HOME%\lib\jfreechart-1.5.3.jar;%APP_HOME%\lib\junit-4.13.1.jar;%APP_HOME%\lib\hamcrest-core-1.3.jar
+set CLASSPATH=%APP_HOME%\lib\RaspberryPi4-V1.0.jar;%APP_HOME%\lib\jSerialComm-2.7.0.jar;%APP_HOME%\lib\jfreechart-1.5.3.jar;%APP_HOME%\lib\junit-4.13.1.jar;%APP_HOME%\lib\pi4j-core-2.0.jar;%APP_HOME%\lib\hamcrest-core-1.3.jar;%APP_HOME%\lib\slf4j-api-1.7.30.jar
 
 
 @rem Execute RaspberryPi4
