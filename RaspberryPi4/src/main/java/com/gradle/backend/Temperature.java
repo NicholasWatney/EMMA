@@ -14,12 +14,23 @@ public class Temperature {
 
     private static int temperatureCount = 0;
     private double fps;
-    public static Map<String, Temperature> temperatureMap = new HashMap<String, Temperature>();
+    private double avgFps;
+    public static Map<String, Temperature> temperatureMap = new HashMap<>();
+
+    public void updateAvgFps() {
+        updateFPS();
+        avgFps = (9 * avgFps + fps) / 10;
+    }
+
+    public void nullifyFps() {
+        avgFps = 0;
+    }
 
     public Temperature() {
         temperatureNumber = ++temperatureCount;
         previousTime = System.currentTimeMillis();
         fps = 0;
+        avgFps = 0;
         temperatureReading = 0;
         temperatureLabel = new JLabel(String.format("Temperature Sensor %d (%.01fFPS): %.01f", temperatureNumber,
                 fps, temperatureReading));
@@ -46,7 +57,7 @@ public class Temperature {
 
     public void updateJLabel() {
         temperatureLabel.setText(String.format("Temperature Sensor %d (%.01fFPS): %.01f", temperatureNumber,
-                fps, temperatureReading));
+                avgFps, temperatureReading));
     }
 
     public void setTemperatureReading(double temperatureReading) {
