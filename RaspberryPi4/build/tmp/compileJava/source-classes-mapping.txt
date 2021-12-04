@@ -35,6 +35,9 @@ com/gradle/swing/MainGUI.java
  com.gradle.swing.MainGUI$4
  com.gradle.swing.MainGUI$5
  com.gradle.swing.MainGUI$6
+ com.gradle.swing.MainGUI$7
+ com.gradle.swing.MainGUI$8
+ com.gradle.swing.MainGUI$9
  com.gradle.swing.MainGUI$JGradientButton
 com/gradle/backend/Pi.java
  com.gradle.backend.Pi

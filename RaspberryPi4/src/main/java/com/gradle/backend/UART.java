@@ -67,6 +67,7 @@ public class UART {
         while (true) {
             if (connectToESP32()) {
                 updateConsole("Connected to " + uart.comPort);
+                updateConsole("Setting Voltage Source to: " + MainGUI.current_voltage + "V");
                 createReadUARTThread().start();
                 break;
             }

@@ -48,6 +48,10 @@ public class MainGUI extends AppGUI {
     JTextPane textPane;
     public static MainGUI mainGUI;
 
+    public static int current_voltage;
+    public int current_current;
+    public int current_frequency;
+
     public final int TEMPERATURE = 0;
     public final int CURRENT = 1;
     public final int VOLTAGE = 2;
@@ -148,25 +152,260 @@ public class MainGUI extends AppGUI {
         mainFrame.getContentPane().getComponent(0).repaint();
     }
 
+    protected JPanel getVoltageButtonsPanel() {
+        current_voltage = 208;
+        JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.insets = new Insets(2, 2, 2, 2);
+        constraints.fill = GridBagConstraints.BOTH;
+        setConstraints(constraints, 0, 0, GridBagConstraints.FIRST_LINE_START);
+        JGradientButton button_120 = new JGradientButton("120 (1ϕ)");
+        button_120.setBackground(Color.PINK);
+        button_120.setFont(new Font("Arial", Font.PLAIN, 24));
+        button_120.setPreferredSize(new Dimension(
+                (int) (button_120.getPreferredSize().getWidth()),
+                (int) (button_120.getPreferredSize().getHeight() * 2.3)
+        ));
+        panel.add(button_120, constraints);
+
+
+        setConstraints(constraints, 0, 1, GridBagConstraints.FIRST_LINE_START);
+        JGradientButton button_208 = new JGradientButton("208 (3ϕ)");
+        button_208.setBackground(Color.PINK);
+        Color color = button_208.getBackground();
+        button_208.setBackground(new Color(color.getRed() - 100, color.getGreen() - 50, color.getBlue() + 50));
+//        updateConsole("Setting Voltage Source to: " + current_voltage + "V");
+        button_208.setFont(new Font("Arial", Font.PLAIN, 24));
+        button_208.setPreferredSize(new Dimension(
+                (int) (button_208.getPreferredSize().getWidth()),
+                (int) (button_208.getPreferredSize().getHeight() * 2.3)
+        ));
+        panel.add(button_208, constraints);
+
+        setConstraints(constraints, 0, 2, GridBagConstraints.FIRST_LINE_START);
+        JGradientButton button_240 = new JGradientButton("240 (½ϕ)");
+        button_240.setBackground(Color.PINK);
+        button_240.setFont(new Font("Arial", Font.PLAIN, 24));
+        button_240.setPreferredSize(new Dimension(
+                (int) (button_240.getPreferredSize().getWidth()),
+                (int) (button_240.getPreferredSize().getHeight() * 2.3)
+        ));
+        panel.add(button_240, constraints);
+
+        button_120.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                if (current_voltage != 120) {
+                    current_voltage = 120;
+                    button_120.setBackground(new Color(color.getRed() - 100, color.getGreen() - 50, color.getBlue() + 50));
+                    button_208.setBackground(Color.PINK);
+                    button_240.setBackground(Color.PINK);
+                    updateConsole("Setting Voltage Source to: " + current_voltage + "V");
+                }
+            }
+        });
+
+        button_208.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                if (current_voltage != 208) {
+                    current_voltage = 208;
+                    button_208.setBackground(new Color(color.getRed() - 100, color.getGreen() - 50, color.getBlue() + 50));
+                    button_120.setBackground(Color.PINK);
+                    button_240.setBackground(Color.PINK);
+                    updateConsole("Setting Voltage Source to: " + current_voltage + "V");
+
+                }
+            }
+        });
+
+        button_240.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                if (current_voltage != 240) {
+                    current_voltage = 240;
+                    button_240.setBackground(new Color(color.getRed() - 100, color.getGreen() - 50, color.getBlue() + 50));
+                    button_120.setBackground(Color.PINK);
+                    button_208.setBackground(Color.PINK);
+                    updateConsole("Setting Voltage Source to: " + current_voltage + "V");
+                }
+            }
+        });
+        return panel;
+    }
+
+    protected JPanel getFrequencyThresholdPanel() {
+        current_frequency = 40;
+        JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.insets = new Insets(0, 0, 0, 0);
+
+        setConstraints(constraints, 0, 0, GridBagConstraints.LAST_LINE_END);
+        JPanel maxPanel = new JPanel();
+        JLabel maxLabel = new JLabel("50kHz");
+//        maxPanel.setPreferredSize(new Dimension(
+//                (int) (maxPanel.getPreferredSize().getWidth() * 1),
+//                (int) (maxPanel.getPreferredSize().getHeight() * 1.15)
+//        ));
+        maxLabel.setFont(new Font("Arial", Font.PLAIN, 24));
+        maxPanel.add(maxLabel);
+        panel.add(getBorderPanel(maxPanel, "Maximum:"), constraints);
+
+        setConstraints(constraints, 0, 1, GridBagConstraints.LAST_LINE_END);
+        JPanel currentPanel = new JPanel();
+        JLabel currentLabel = new JLabel(current_frequency + "kHz");
+//        currentPanel.setPreferredSize(new Dimension(
+//                    (int) (currentPanel.getPreferredSize().getWidth() * 1),
+//                    (int) (currentPanel.getPreferredSize().getHeight() * 1.15)
+//        ));
+        currentLabel.setFont(new Font("Arial", Font.PLAIN, 24));
+        currentPanel.add(currentLabel);
+        panel.add(getBorderPanel(currentPanel, "Current:"), constraints);
+
+        setConstraints(constraints, 0, 2, GridBagConstraints.LAST_LINE_END);
+        JPanel minPanel = new JPanel();
+        JLabel minLabel = new JLabel("25kHz");
+//        minPanel.setPreferredSize(new Dimension(
+//                    (int) (minPanel.getPreferredSize().getWidth() * 1),
+//                    (int) (minPanel.getPreferredSize().getHeight() * 1.15)
+//        ));
+        minLabel.setFont(new Font("Arial", Font.PLAIN, 24));
+        minPanel.add(minLabel);
+        panel.add(getBorderPanel(minPanel, "Minimum:"), constraints);
+
+        setConstraints(constraints, 0, 3, GridBagConstraints.LAST_LINE_END);
+        constraints.insets.set(6, 2, 2, 2);
+        JGradientButton increase = new JGradientButton("+");
+        increase.setBackground(Color.PINK);
+        increase.setFont(new Font("Arial", Font.PLAIN, 24));
+        increase.setPreferredSize(new Dimension(
+                (int) (increase.getPreferredSize().getWidth() * 3.0),
+                (int) (increase.getPreferredSize().getHeight() * 1.08)
+        ));
+        panel.add(increase, constraints);
+
+        setConstraints(constraints, 0, 4, GridBagConstraints.LAST_LINE_END);
+        constraints.insets.set(2, 2, 2, 2);
+        JGradientButton decrease = new JGradientButton("-");
+        decrease.setBackground(Color.PINK);
+        decrease.setFont(new Font("Arial", Font.PLAIN, 24));
+        decrease.setPreferredSize(new Dimension(
+                (int) (decrease.getPreferredSize().getWidth() * 3.0),
+                (int) (decrease.getPreferredSize().getHeight() * 1.08)
+        ));
+        panel.add(decrease, constraints);
+        return panel;
+    }
+
+
+    protected JPanel getCurrentThresholdPanel() {
+        current_current = 24;
+        JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.insets = new Insets(0, 0, 0, 0);
+
+        setConstraints(constraints, 0, 0, GridBagConstraints.LAST_LINE_END);
+        JPanel maxPanel = new JPanel();
+        JLabel maxLabel = new JLabel("30A");
+//        maxPanel.setPreferredSize(new Dimension(
+//                (int) (maxPanel.getPreferredSize().getWidth() * 1),
+//                (int) (maxPanel.getPreferredSize().getHeight() * 1.15)
+//        ));
+        maxLabel.setFont(new Font("Arial", Font.PLAIN, 24));
+        maxPanel.add(maxLabel);
+        panel.add(getBorderPanel(maxPanel, "Maximum:"), constraints);
+
+        setConstraints(constraints, 0, 1, GridBagConstraints.LAST_LINE_END);
+        JPanel currentPanel = new JPanel();
+        JLabel currentLabel = new JLabel(current_current + "A");
+//        currentPanel.setPreferredSize(new Dimension(
+//                    (int) (currentPanel.getPreferredSize().getWidth() * 1),
+//                    (int) (currentPanel.getPreferredSize().getHeight() * 1.15)
+//        ));
+        currentLabel.setFont(new Font("Arial", Font.PLAIN, 24));
+        currentPanel.add(currentLabel);
+        panel.add(getBorderPanel(currentPanel, "Current:"), constraints);
+
+        setConstraints(constraints, 0, 2, GridBagConstraints.LAST_LINE_END);
+        JPanel minPanel = new JPanel();
+        JLabel minLabel = new JLabel("10A");
+//        minPanel.setPreferredSize(new Dimension(
+//                    (int) (minPanel.getPreferredSize().getWidth() * 1),
+//                    (int) (minPanel.getPreferredSize().getHeight() * 1.15)
+//        ));
+        minLabel.setFont(new Font("Arial", Font.PLAIN, 24));
+        minPanel.add(minLabel);
+        panel.add(getBorderPanel(minPanel, "Minimum:"), constraints);
+
+        setConstraints(constraints, 0, 3, GridBagConstraints.LAST_LINE_END);
+        constraints.insets.set(6, 2, 2, 2);
+        JGradientButton increase = new JGradientButton("+");
+        increase.setBackground(Color.PINK);
+        increase.setFont(new Font("Arial", Font.PLAIN, 24));
+        increase.setPreferredSize(new Dimension(
+                (int) (increase.getPreferredSize().getWidth() * 3.0),
+                (int) (increase.getPreferredSize().getHeight() * 1.08)
+        ));
+        panel.add(increase, constraints);
+
+        setConstraints(constraints, 0, 4, GridBagConstraints.LAST_LINE_END);
+        constraints.insets.set(2, 2, 2, 2);
+        JGradientButton decrease = new JGradientButton("-");
+        decrease.setBackground(Color.PINK);
+        decrease.setFont(new Font("Arial", Font.PLAIN, 24));
+        decrease.setPreferredSize(new Dimension(
+                (int) (decrease.getPreferredSize().getWidth() * 3.0),
+                (int) (decrease.getPreferredSize().getHeight() * 1.08)
+        ));
+        panel.add(decrease, constraints);
+        return panel;
+    }
+
+    protected JPanel getConfigurationPanel() {
+        JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.fill = GridBagConstraints.BOTH;
+        setConstraints(constraints, 0, 0, GridBagConstraints.LAST_LINE_END);
+        constraints.insets = new Insets(0, 0, 0, 0);
+        panel.add(getBorderPanel(getVoltageButtonsPanel(), "Voltage Source:"), constraints);
+
+        setConstraints(constraints, 1, 0, GridBagConstraints.LAST_LINE_END);
+        constraints.insets = new Insets(0, 0, 0, 0);
+        panel.add(getBorderPanel(getCurrentThresholdPanel(), "Current Threshold:"), constraints);
+        setConstraints(constraints, 2, 0, GridBagConstraints.LAST_LINE_END);
+        constraints.insets = new Insets(0, 0, 0, 0);
+        panel.add(getBorderPanel(getFrequencyThresholdPanel(), "Frequency Threshold:"), constraints);
+
+        return panel;
+    }
+
     protected JTabbedPane getTabbedPane() {
         tabbedPane = new JTabbedPane();
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.insets = new Insets(0, 0, 0, 0);
+
+        tabbedPane.addTab("Configuration", getConfigurationPanel());
+        tabbedPaneCount++;
+
         tabbedPane.addTab("Overview", getReadingPanel());
         tabbedPaneCount++;
-        JPanel panel1 = new JPanel();
 
+        JPanel panel1 = new JPanel();
         panel1.add(getGraphPanel(TEMPERATURE), constraints);
         tabbedPane.addTab("Temperature", panel1);
         tabbedPaneCount++;
+
         JPanel panel2 = new JPanel();
         panel2.add(getGraphPanel(CURRENT), constraints);
         tabbedPane.addTab("Current", panel2);
         tabbedPaneCount++;
-        JPanel panel3 = new JPanel();
-        panel3.add(getGraphPanel(VOLTAGE), constraints);
-        tabbedPane.addTab("Voltage", panel3);
-        tabbedPaneCount++;
+
+//        JPanel panel3 = new JPanel();
+//        panel3.add(getGraphPanel(VOLTAGE), constraints);
+//        tabbedPane.addTab("Voltage", panel3);
+//        tabbedPaneCount++;
         return tabbedPane;
     }
 
@@ -215,10 +454,10 @@ public class MainGUI extends AppGUI {
         panel.add(getBorderPanel(getCurrentPrecaution()), constraints);
         setConstraints(constraints, 0, 2, GridBagConstraints.CENTER);
         constraints.insets = new Insets(0, 0, 0, 0);
-        panel.add(getBorderPanel(getVoltagePanel(), "Voltage:"), constraints);
-        setConstraints(constraints, 1, 2, GridBagConstraints.FIRST_LINE_START);
-        constraints.insets = new Insets(7, 6, 2, 0);
-        panel.add(getBorderPanel(getVoltagePrecaution()), constraints);
+//        panel.add(getBorderPanel(getVoltagePanel(), "Voltage:"), constraints);
+//        setConstraints(constraints, 1, 2, GridBagConstraints.FIRST_LINE_START);
+//        constraints.insets = new Insets(7, 6, 2, 0);
+//        panel.add(getBorderPanel(getVoltagePrecaution()), constraints);
 
 //        panel.add(getBorderPanel(getControllerPanel(), "Controller:"), constraints);
         return panel;
@@ -287,12 +526,12 @@ public class MainGUI extends AppGUI {
             console.append(consoleList.get(consoleHeight - 1));
         } else {
             for (int i = 0; i < consoleList.size() - 1; i++) {
-                console.append(consoleList.get((consoleIndex + i - consoleHeight + 1) % (consoleHeight - 1)) + "\n");
+                console.append(consoleList.get((consoleIndex + i - consoleHeight + 2) % (consoleHeight - 1)) + "\n");
             }
             console.append(consoleList.get(consoleHeight - 1));
         }
         textArea.setText(console.toString());
-        System.out.println(updatedLine);
+//        System.out.println(updatedLine);
         consoleIndex++;
     }
 
@@ -320,7 +559,7 @@ public class MainGUI extends AppGUI {
             console.append(consoleList.get(consoleHeight - 1));
         }
         textArea.setText(console.toString());
-        System.out.println(console.toString());
+//        System.out.println(console.toString());
 //        consoleIndex++;
     }
 

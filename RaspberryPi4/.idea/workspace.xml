@@ -10,47 +10,30 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a30cb016-f8e2-4a7c-a332-76cd6bd6647d" name="Default Changelist" comment="k">
-      <change beforePath="$PROJECT_DIR$/../ESP32/Main/Main.ino" beforeDir="false" afterPath="$PROJECT_DIR$/../ESP32/Main/Main.ino" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/6.8/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.8/executionHistory/executionHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/6.8/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.8/executionHistory/executionHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/6.8/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.8/fileHashes/fileHashes.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/6.8/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.8/fileHashes/fileHashes.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/6.8/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.8/fileHashes/resourceHashesCache.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/6.8/javaCompile/classAnalysis.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.8/javaCompile/classAnalysis.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/6.8/javaCompile/javaCompile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.8/javaCompile/javaCompile.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/A.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/Test.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/Test.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/gradle/backend/Current.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/gradle/backend/Current.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/gradle/backend/Temperature.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/gradle/backend/Temperature.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/gradle/backend/UART$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/gradle/backend/UART$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/gradle/backend/UART$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/gradle/backend/UART$2.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/gradle/backend/UART.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/gradle/backend/UART.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/gradle/backend/Voltage.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/gradle/backend/Voltage.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/AbortGUI$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/AbortGUI$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/AbortGUI$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/AbortGUI$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/AbortGUI$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/AbortGUI$3.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/AbortGUI.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/AbortGUI.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/AppGUI$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/AppGUI$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/AppGUI.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/AppGUI.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/MainGUI$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/MainGUI$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/MainGUI$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/MainGUI$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/MainGUI$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/MainGUI$3.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/MainGUI$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/MainGUI$4.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/MainGUI$5.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/MainGUI$5.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/MainGUI$6.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/MainGUI$6.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/MainGUI$JGradientButton.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/MainGUI$JGradientButton.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/MainGUI.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/gradle/swing/MainGUI.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/distributions/RaspberryPi4-V1.0.tar" beforeDir="false" afterPath="$PROJECT_DIR$/build/distributions/RaspberryPi4-V1.0.tar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/distributions/RaspberryPi4-V1.0.zip" beforeDir="false" afterPath="$PROJECT_DIR$/build/distributions/RaspberryPi4-V1.0.zip" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/libs/RaspberryPi4-V1.0.jar" beforeDir="false" afterPath="$PROJECT_DIR$/build/libs/RaspberryPi4-V1.0.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/scripts/RaspberryPi4" beforeDir="false" afterPath="$PROJECT_DIR$/build/scripts/RaspberryPi4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/scripts/RaspberryPi4.bat" beforeDir="false" afterPath="$PROJECT_DIR$/build/scripts/RaspberryPi4.bat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/tmp/compileJava/source-classes-mapping.txt" beforeDir="false" afterPath="$PROJECT_DIR$/build/tmp/compileJava/source-classes-mapping.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Test.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/gradle/backend/Current.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/gradle/backend/Current.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/gradle/backend/Temperature.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/gradle/backend/Temperature.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/gradle/backend/UART.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/gradle/backend/UART.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/gradle/backend/Voltage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/gradle/backend/Voltage.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/gradle/swing/AbortGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/gradle/swing/AbortGUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/gradle/swing/AppGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/gradle/swing/AppGUI.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/gradle/swing/MainGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/gradle/swing/MainGUI.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -314,7 +297,7 @@
       <workItem from="1637193078295" duration="19301000" />
       <workItem from="1638482735458" duration="900000" />
       <workItem from="1638491017996" duration="2917000" />
-      <workItem from="1638571481009" duration="5961000" />
+      <workItem from="1638571481009" duration="16252000" />
     </task>
     <servers />
   </component>
@@ -338,13 +321,34 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/gradle/swing/MainGUI.java</url>
-          <line>394</line>
+          <line>633</line>
           <option name="timeStamp" value="95" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/Main.java</url>
           <line>7</line>
           <option name="timeStamp" value="105" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/gradle/swing/MainGUI.java</url>
+          <line>86</line>
+          <option name="timeStamp" value="116" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>file://$PROJECT_DIR$/src/main/java/com/gradle/swing/MainGUI.java</url>
+          <line>515</line>
+          <properties class="com.gradle.swing.MainGUI" method="updateConsoleHelper">
+            <option name="EMULATED" value="true" />
+          </properties>
+          <option name="timeStamp" value="117" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>file://$PROJECT_DIR$/src/main/java/com/gradle/swing/MainGUI.java</url>
+          <line>506</line>
+          <properties class="com.gradle.swing.MainGUI" method="updateConsole">
+            <option name="EMULATED" value="true" />
+          </properties>
+          <option name="timeStamp" value="118" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -356,7 +360,6 @@
       </configuration>
       <configuration name="Remote">
         <watch expression="consoleList" language="JAVA" />
-        <watch expression="consoleIndex" language="JAVA" />
       </configuration>
     </watches-manager>
   </component>
