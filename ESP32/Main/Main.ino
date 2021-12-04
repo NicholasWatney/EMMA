@@ -1,40 +1,78 @@
 
+
+
+
+
+#include <string>
+#include <sstream>
+#include <Adafruit_DS3502.h>
+
+Adafruit_DS3502 ds3502 = Adafruit_DS3502();
+
+#define LM1 36
+#define LM2 39
+
 #define LED1 32
 #define LED2 33
 #define LED3 25
 #define LED4 26
 
-#define LM1 36
-#define LM2 39
-
 #define DS 23
 
-#include <string>
-#include <sstream>
+#define DS1 32
+#define DS2 33
+#define DS3 25
+#define DS4 26
+
+//#define WIPER_VALUE_PIN 36
 
 #include <OneWire.h>
 
-int16_t dallas(int x, byte start)
-{
-  OneWire ds(x);
-  byte i;
-  byte data[9];
-  int16_t result;
-  do
-  {
-    ds.reset();
-    ds.write(0xCC);
-    ds.write(0xBE);
-    for (i = 0; i < 9; i++) data[i] = ds.read();
-    result = (data[1]<<8) | data[0];
-    result>>=4; if (data[i]&128) result |= 61440;
-    if (data[0]&8) ++result;
-    ds.reset();
-    ds.write(0xCC);
-    ds.write(0x44, 1);
-    if (start) delay(1000);
-  } while (start--);
-  return result;
+//int16_t dallas(int x,byte start){
+//    OneWire ds(x);
+//    byte i;
+//    byte data[2];
+//    int16_t result;
+//    do{
+//        ds.reset();
+//        ds.write(0xCC);
+//        ds.write(0xBE);
+//        for (int i = 0; i < 2; i++) data[i] = ds.read();
+//        result=(data[1]<<8) |data[0];
+//        result>>=4; if (data[1]&128) result |=61440;
+//        if (data[0]&8) ++result;
+//        ds.reset();
+//        ds.write(0xCC);
+//        ds.write(0x44, 1);
+//        if (start) delay(1000);
+//    } while (start--);
+//    return result;
+//}
+
+
+float inline dallas(int x, byte start){
+    OneWire ds(x);
+    byte i;
+    byte data[2];
+    int16_t result;
+    float temperature;
+    do{
+        ds.reset();
+        ds.write(0xCC);
+        ds.write(0xBE);
+        for (int i = 0; i < 2; i++) data[i] = ds.read();
+        result=(data[1]<<8) |data[0];
+        // Here you could print out the received bytes as binary, as requested in my comment:
+        // Serial.println(result, BIN);
+        int16_t whole_degree = (result & 0x07FF) >> 4; // cut out sign bits and shift
+        temperature = whole_degree + 0.5*((data[0]&0x8)>>3) + 0.25*((data[0]&0x4)>>2) + 0.125*((data[0]&0x2)>>1) + 0.0625*(data[0]&0x1);
+        if (data[1]&128) temperature*=-1;
+        ds.reset();
+        ds.write(0xCC);
+        ds.write(0x44, 1);
+        if (start) delay(10);
+    } while (start--);
+    return temperature;
 }
 
 #include <DallasTemperature.h>
@@ -79,7 +117,7 @@ std::string inline toString(const T &value)
     return os.str();
 }
 
-void process(std::string parsed)
+void inline process(std::string parsed)
 {
   std::string label = parsed.substr(0, parsed.find(":"));
   if (label == "L1")
@@ -136,9 +174,10 @@ void process(std::string parsed)
   }
 }
 
+
 #define LM35_DELAY 50
 unsigned long clockLM35 = 0;
-void updateLM35()
+void inline updateLM35()
 {
   clockLM35 += timeDifference;
   if (clockLM35 >= LM35_DELAY)
@@ -153,19 +192,20 @@ void updateLM35()
   }
 }
 
-#define TEMP_DELAY 750 // >= 750
+
+#define TEMP_DELAY 250 // >= 750
 unsigned long tempClock = 0;
-void updateDS18B20()
+void inline updateDS18B20()
 {
   tempClock += timeDifference;
   if (tempClock >= TEMP_DELAY)
   {
-    float DS_temp1 = sensors.getTempCByIndex(0);
-    float DS_temp2 = sensors.getTempCByIndex(1);
-    float DS_temp3 = sensors.getTempCByIndex(2);
-    float DS_temp4 = sensors.getTempCByIndex(3);
-    
-    sensors.requestTemperatures();
+
+    float DS_temp1 = dallas(DS1, 0);
+    float DS_temp2 = dallas(DS2, 0);
+    float DS_temp3 = dallas(DS3, 0);
+    float DS_temp4 = dallas(DS4, 0);
+
     addMessage("T1:" + toString(DS_temp1));
     addMessage("T2:" + toString(DS_temp2));
     addMessage("T3:" + toString(DS_temp3));
@@ -177,7 +217,7 @@ void updateDS18B20()
 #define READ_DELAY 100
 std::string parsed = "";
 unsigned long readClock = 0;
-void updateRead()
+void inline updateRead()
 {
   readClock += timeDifference;
   if (readClock % READ_DELAY == 0)
@@ -196,25 +236,28 @@ void updateRead()
   }
 }
 
-void timeClock()
+void inline timeClock()
 {
   currentTime = millis();
   timeDifference = currentTime - oldTime;
   oldTime = currentTime;
 }
 
-DeviceAddress tempDeviceAddress;
-int numOfDevices;
-int resolution = 12;
-void setup()
+
+
+void inline setupLEDs()
 {
-  Serial.begin(57600);
   pinMode(LED1, OUTPUT);
   pinMode(LED2, OUTPUT);
   pinMode(LED3, OUTPUT);
   pinMode(LED4, OUTPUT);
-  
+}
 
+DeviceAddress tempDeviceAddress;
+int numOfDevices;
+int resolution = 12;
+void inline setupSensors()
+{
   sensors.begin();
   sensors.requestTemperatures();
   sensors.getAddress(tempDeviceAddress, 0); sensors.setResolution(tempDeviceAddress, resolution);
@@ -224,10 +267,66 @@ void setup()
   sensors.setWaitForConversion(false);
 }
 
+void inline setupQuickSensors()
+{
+  dallas(DS1, 1);
+  dallas(DS2, 1);
+  dallas(DS3, 1);
+  dallas(DS4, 1);
+}
+
+void setupDS3502()
+{
+  if (!ds3502.begin()) 
+  {
+    Serial.println("Couldn't find DS3502 chip");
+  }
+   ds3502.setWiperDefault(0);
+}
+
+#define DS3502_DELAY 5
+unsigned long DS3502_Clock = 0;
+int wiper_input = 0;
+bool up = true;
+void inline updateDS3502()
+{
+  DS3502_Clock += timeDifference;
+  if (DS3502_Clock >= DS3502_DELAY)
+  {
+    ds3502.setWiper(wiper_input);
+    if (wiper_input <= 0) 
+    {
+      up = true;
+    }
+  
+    if (up) {
+        wiper_input++;
+    } else {
+        wiper_input--;
+    }
+  
+    if (wiper_input >= 128) 
+    {
+      up = false;
+    }
+    DS3502_Clock = DS3502_Clock % DS3502_DELAY;
+  }
+}
+
+void setup()
+{
+  Serial.begin(57600);
+//  setupLEDs();
+//  setupSensors();
+  setupQuickSensors();
+  setupDS3502();
+}
+
 void loop()
 {
   timeClock();
   updateDS18B20();
+  updateDS3502();
   messageFlush();
   updateRead();
 }
