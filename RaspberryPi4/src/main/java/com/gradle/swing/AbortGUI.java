@@ -2,6 +2,7 @@ package com.gradle.swing;
 
 
 import javax.swing.*;
+import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,9 +10,10 @@ import java.awt.event.ActionListener;
 public class AbortGUI extends AppGUI {
 
     private JLabel abortText;
-    private JButton abortButton;
+    private JGradientButton abortButton;
     private int countDown;
     private Timer timer;
+    private static final int fontSize = 72;
 
     public AbortGUI() {}
 
@@ -35,9 +37,15 @@ public class AbortGUI extends AppGUI {
 
     private JPanel getMainPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBorder(BorderFactory.createTitledBorder("EMMA Project"));
+
+        TitledBorder border = BorderFactory.createTitledBorder("EMMA Application");
+        border.setTitleFont(new Font("Arial", Font.PLAIN, fontSize));
+        border.setTitleJustification(TitledBorder.CENTER);
+        border.setBorder(new StrokeBorder(new BasicStroke(5.0f)));
+        panel.setBorder(border);
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.fill = GridBagConstraints.BOTH;
+        constraints.insets = new Insets(10, 0, 0, 0);
         setConstraints(constraints, 0, 0, GridBagConstraints.CENTER);
         panel.add(getAbortPanel(), constraints);
         setConstraints(constraints, 0, 1, GridBagConstraints.CENTER);
@@ -49,9 +57,10 @@ public class AbortGUI extends AppGUI {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.fill = GridBagConstraints.BOTH;
-        setConstraints(constraints, 0, 0, GridBagConstraints.CENTER);
+        setConstraints(constraints, 0, 0, GridBagConstraints.WEST);
         countDown = 10;
         abortText = new JLabel(String.format("Launching in: %d", countDown));
+        abortText.setFont(new Font("Arial", Font.PLAIN, fontSize));
         panel.add(abortText, constraints);
         return panel;
     }
@@ -61,16 +70,23 @@ public class AbortGUI extends AppGUI {
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.fill = GridBagConstraints.BOTH;
         setConstraints(constraints, 0, 0, GridBagConstraints.CENTER);
-        JButton launchButton = new JButton("Launch");
+//        JButton launchButton = new JButton("Launch");
+        JGradientButton launchButton = new JGradientButton("LAUNCH");
+        launchButton.setBackground(Color.GREEN);
+        launchButton.setFont(new Font("Arial", Font.PLAIN, fontSize));
         launchButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                closeWindow();
                 AppGUI.launchMainGUI();
+                closeWindow();
             }
         });
+        constraints.insets = new Insets(10, 30, 10, 10);
         panel.add(launchButton, constraints);
-        abortButton = new JButton("Abort");
+//        abortButton = new JButton("Abort");
+        abortButton = new JGradientButton("ABORT");
+        abortButton.setBackground(Color.RED);
+        abortButton.setFont(new Font("Arial", Font.PLAIN, fontSize));
         abortButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -79,6 +95,7 @@ public class AbortGUI extends AppGUI {
             }
         });
         setConstraints(constraints, 1, 0, GridBagConstraints.CENTER);
+        constraints.insets = new Insets(10, 10, 10, 30);
         panel.add(abortButton, constraints);
         return panel;
     }

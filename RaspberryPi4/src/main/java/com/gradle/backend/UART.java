@@ -1,6 +1,7 @@
 package com.gradle.backend;
 
 import com.fazecast.jSerialComm.*;
+import com.gradle.swing.MainGUI;
 import org.junit.runner.OrderWith;
 
 import java.io.IOException;
@@ -18,9 +19,9 @@ public class UART {
     public Map<String, Object> dataMap;
     public static UART uart;
     public static String os;
+    public static boolean resetCommand = false;
 
     private boolean connectToESP32() {
-        os = System.getProperty("os.name");
         ArrayList<String> portNames = new ArrayList<>();
         if (os.equals("Mac OS X")) {
             portNames.add("cu.SLAB_USBtoUART");
@@ -53,24 +54,31 @@ public class UART {
         return true;
     }
 
+    private void updateConsole(StringBuilder message) {
+        MainGUI.mainGUI.updateConsole(message);
+    }
+
+    private void updateConsole(String message) {
+        MainGUI.mainGUI.updateConsole(message);
+    }
+
     private void connectToUARTHelper() {
         boolean attemptToConnect = false;
         while (true) {
             if (connectToESP32()) {
-                System.out.println("Connected to " + uart.comPort);
+                updateConsole("Connected to " + uart.comPort);
                 createReadUARTThread().start();
                 break;
             }
             if (!attemptToConnect) {
-                System.err.println("ESP32 Microcontroller is not connected RPi4." +
-                        "\nWaiting on connection.");
+                updateConsole("ESP32 Microcontroller is not connected RPi4. Waiting on connection...");
                 attemptToConnect = true;
             }
 
             try {
                 Thread.sleep(100);
             } catch (InterruptedException ie) {
-                System.err.println("InterruptedException: Thread interrupted initializing" +
+                updateConsole("InterruptedException: Thread interrupted initializing" +
                         "UART properties.");
             }
         }
@@ -87,7 +95,12 @@ public class UART {
 
     public UART() {
         uart = this;
-        pi = new Pi();
+        os = System.getProperty("os.name");
+        if (os.equals("Linux")) {
+            pi = new Pi();
+        } else {
+            pi = null;
+        }
     }
 
     public void initializeDataSet() {
@@ -120,9 +133,39 @@ public class UART {
                     return;
                 }
                 temperatureSensor.setTemperatureReading(Double.parseDouble(value));
-//                temperatureSensor.updateFPS();
+                temperatureSensor.addTemperatureHistory();
+
                 temperatureSensor.updateAvgFps();
                 temperatureSensor.updateJLabel();
+                temperatureSensor.updatePrecautionLabel();
+            } else if ("com.gradle.backend.Current".equals(sensor.getClass().getName())) {
+                Current currentSensor = (Current) sensor;
+
+                try {
+                    Double getCurrentValue = Double.parseDouble(value);
+                } catch (NumberFormatException nfe) {
+                    return;
+                }
+                currentSensor.setCurrentReading(Double.parseDouble(value));
+                currentSensor.addCurrentHistory();
+
+                currentSensor.updateAvgFps();
+                currentSensor.updateJLabel();
+                currentSensor.updatePrecautionLabel();
+            } else if ("com.gradle.backend.Voltage".equals(sensor.getClass().getName())) {
+                Voltage voltageSensor = (Voltage) sensor;
+
+                try {
+                    Double getVoltageValue = Double.parseDouble(value);
+                } catch (NumberFormatException nfe) {
+                    return;
+                }
+                voltageSensor.setVoltageReading(Double.parseDouble(value));
+                voltageSensor.addVoltageHistory();
+
+                voltageSensor.updateAvgFps();
+                voltageSensor.updateJLabel();
+                voltageSensor.updatePrecautionLabel();
             }
         }
     }
@@ -150,7 +193,7 @@ public class UART {
         }
     }
 
-    private void restartESP32() {
+    public void restartESP32() {
         try {
             pi.resetPin.off();
             Thread.sleep(100);
@@ -163,20 +206,32 @@ public class UART {
             }
 
         } catch (InterruptedException e) {
-            System.err.println("InterruptedException: Thread to restart ESP32" +
+            updateConsole("InterruptedException: Thread to restart ESP32" +
                     " interrupted while sleeping.");
         }
     }
 
-    private void nullifyEverything() {
+    public void nullifyEverything() {
         for (String key : dataMap.keySet()) {
             Object sensor = dataMap.get(key);
             if ("com.gradle.backend.Temperature".equals(sensor.getClass().getName())) {
                 Temperature temperatureSensor = (Temperature) sensor;
                 temperatureSensor.nullifyFps();
+//                temperatureSensor.nullifyTemp();
                 temperatureSensor.updateJLabel();
+                temperatureSensor.updatePrecautionLabel();
+            } else if ("com.gradle.backend.Current".equals(sensor.getClass().getName())) {
+                Current currentSensor = (Current) sensor;
+                currentSensor.nullifyFps();
+                currentSensor.updateJLabel();
+                currentSensor.updatePrecautionLabel();
+            } else if ("com.gradle.backend.Voltage".equals(sensor.getClass().getName())) {
+                Voltage voltageSensor = (Voltage) sensor;
+                voltageSensor.nullifyFps();
+                voltageSensor.updateJLabel();
+                voltageSensor.updatePrecautionLabel();
             }
-        }
+    }
     }
 
     public void readUART() {
@@ -202,7 +257,7 @@ public class UART {
                 ++connectCount;
                 if (connectCount == 1) {
                     nullifyEverything();
-                    System.out.println("Attempting to reconnect to: " + uart.comPort + "...");
+                    updateConsole("Attempting to reconnect to: " + uart.comPort + "...");
                 }
 
                 if (connectCount > 0) {
@@ -220,14 +275,14 @@ public class UART {
 
             if (connectCount > 0) {
                 connectCount = 0;
-                System.out.println("Connected to: " + uart.comPort + " successfully!");
+                updateConsole("Connected to: " + uart.comPort + " successfully!");
             }
 
             if (bufferCount <= 0) {
 
                 ++consecutiveSleepCount;
                 if (consecutiveSleepCount == 20) {
-                    System.err.println("Attempting to restart ESP32...");
+                    updateConsole("Attempting to restart ESP32...");
                     restartESP32();
                     continue;
                 }
@@ -243,7 +298,7 @@ public class UART {
             while (bufferCount-- > 0) {
 
                 if (consecutiveSleepCount >= 20) {
-                    System.err.println("Restarted ESP32 successfully!");
+                    updateConsole("Restarted ESP32 successfully!");
                 }
 
                 if (consecutiveSleepCount > 0) {
@@ -264,7 +319,12 @@ public class UART {
                     ++parseableCount;
 
                     if (parseableCount == 1) {
-                        System.out.println("Not parseable character. Restarting ESP32...");
+                        if (resetCommand) {
+                            updateConsole("Restart Requested. Restarting ESP32...");
+                            resetCommand = false;
+                        } else {
+                            updateConsole("Corrupted Serial Bus. Restarting ESP32...");
+                        }
                     }
 
                     if (parseableCount > 0) {
@@ -276,7 +336,7 @@ public class UART {
 
                 if (parseableCount > 0) {
                     parseableCount = 0;
-                    System.out.println("Restarted ESP32 successfully!");
+                    updateConsole("Restarted ESP32 Successfully!");
                 }
 
                 if (parse == ';') {

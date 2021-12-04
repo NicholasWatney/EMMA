@@ -6,8 +6,8 @@ com/gradle/swing/AbortGUI.java
 com/gradle/backend/Concurrent.java
  com.gradle.backend.Concurrent
  com.gradle.backend.Concurrent$1
-com/gradle/backend/Pi.java
- com.gradle.backend.Pi
+com/gradle/backend/Temperature.java
+ com.gradle.backend.Temperature
 Main.java
  Main
 com/gradle/backend/Current.java
@@ -15,13 +15,9 @@ com/gradle/backend/Current.java
 com/gradle/swing/AppGUI.java
  com.gradle.swing.AppGUI
  com.gradle.swing.AppGUI$1
+ com.gradle.swing.JGradientButton
 Test.java
- A
  Test
-com/gradle/backend/Voltage.java
- com.gradle.backend.Voltage
-com/gradle/backend/Temperature.java
- com.gradle.backend.Temperature
 com/gradle/backend/Light.java
  com.gradle.backend.Light
  com.gradle.backend.Light$1
@@ -29,7 +25,16 @@ com/gradle/backend/UART.java
  com.gradle.backend.UART
  com.gradle.backend.UART$1
  com.gradle.backend.UART$2
+com/gradle/backend/Voltage.java
+ com.gradle.backend.Voltage
 com/gradle/swing/MainGUI.java
  com.gradle.swing.MainGUI
  com.gradle.swing.MainGUI$1
  com.gradle.swing.MainGUI$2
+ com.gradle.swing.MainGUI$3
+ com.gradle.swing.MainGUI$4
+ com.gradle.swing.MainGUI$5
+ com.gradle.swing.MainGUI$6
+ com.gradle.swing.MainGUI$JGradientButton
+com/gradle/backend/Pi.java
+ com.gradle.backend.Pi
