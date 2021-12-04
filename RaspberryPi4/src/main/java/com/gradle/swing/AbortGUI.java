@@ -58,7 +58,7 @@ public class AbortGUI extends AppGUI {
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.fill = GridBagConstraints.BOTH;
         setConstraints(constraints, 0, 0, GridBagConstraints.WEST);
-        countDown = 10;
+        countDown = 3;
         abortText = new JLabel(String.format("Launching in: %d", countDown));
         abortText.setFont(new Font("Arial", Font.PLAIN, fontSize));
         panel.add(abortText, constraints);
