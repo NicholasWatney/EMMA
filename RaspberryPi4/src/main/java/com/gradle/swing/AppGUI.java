@@ -39,9 +39,14 @@ public abstract class AppGUI {
 
     private final int DEBUG = 1;
 
+    final static int CHARGE = 0;
+    final static int DISCHARGE = 1;
+
     protected JFrame abortFrame;
     protected JFrame mainFrame;
     protected JFrame actionFrame;
+    protected static boolean actionScreenCreated = false;
+    protected static boolean mainScreenCreated = false;
 
 
     public static Color borderColor = new Color(95, 123, 184);
@@ -54,14 +59,39 @@ public abstract class AppGUI {
         abortScreen.buildGUI();
     }
 
-    protected static void launchActionScreen() {
-        ActionScreen.actionScreen = new ActionScreen();
-        ActionScreen.actionScreen.buildGUI();
+    protected static void launchActionScreen(String string) {
+        if (actionScreenCreated == false) {
+            ActionScreen.actionScreen = new ActionScreen();
+            if (string.equals("CHARGE")) {
+                ActionScreen.actionScreen.pushableButton = CHARGE;
+            } else if (string.equals("DISCHARGE")) {
+                ActionScreen.actionScreen.pushableButton = DISCHARGE;
+            }
+            ActionScreen.actionScreen.buildGUI();
+            actionScreenCreated = true;
+        } else {
+            if (string.equals("CHARGE")) {
+                ActionScreen.actionScreen.pushableButton = CHARGE;
+            } else if (string.equals("DISCHARGE")) {
+                ActionScreen.actionScreen.pushableButton = DISCHARGE;
+            }
+            ActionScreen.actionScreen.startMasterClock();
+            ActionScreen.actionScreen.dischargeButton.setBackground(Color.GREEN);
+            ActionScreen.actionScreen.refreshConsole();
+            ActionScreen.actionScreen.getFrame().setVisible(true);
+            ActionScreen.actionScreen.buttonPushed = false;
+            ActionScreen.actionScreen.updateConsole("To initiate the discharging sequence, please select the \"DISCHARGE\" option above...");
+        }
     }
 
     protected static void launchMainGUI() {
-        MainGUI.mainGUI = new MainGUI();
-        MainGUI.mainGUI.buildGUI();
+        if (!mainScreenCreated) {
+            mainScreenCreated = true;
+            MainGUI.mainGUI = new MainGUI();
+            MainGUI.mainGUI.buildGUI();
+        } else {
+            MainGUI.mainGUI.mainFrame.setVisible(true);
+        }
     }
 
     protected static JPanel getBorderPanel(JPanel inside, String title) {

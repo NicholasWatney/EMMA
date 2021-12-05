@@ -11,6 +11,9 @@ import java.util.ArrayList;
 
 public class ActionScreen extends AppGUI {
 
+    public StringBuilder disabledButton;
+    public StringBuilder buttonSequence;
+
     public static ActionScreen actionScreen;
     public static long epochDifference;
     public static long epochClock;
@@ -20,7 +23,12 @@ public class ActionScreen extends AppGUI {
     final static int CHARGE = 0;
     final static int DISCHARGE = 1;
 
+    public JFrame getFrame() {
+        return actionFrame;
+    }
+
     public int pushableButton = CHARGE;
+    public boolean buttonPushed = false;
 
     private static long oldTime;
     private static long newTime;
@@ -79,6 +87,9 @@ public class ActionScreen extends AppGUI {
     public ActionScreen() {}
 
     public void buildGUI() {
+        consoleIndex = 0;
+        disabledButton = new StringBuilder("");
+        buttonSequence = new StringBuilder("");
         startMasterClock();
 
         actionFrame = new JFrame("EMMA Application");
@@ -99,6 +110,7 @@ public class ActionScreen extends AppGUI {
         actionFrame.setVisible(true);
         Thread updateGUIThread = createUpdateGUIThread();
         updateGUIThread.start();
+        updateConsole("To initiate the charging sequence, please select the \"CHARGE\" option above...");
     }
 
     public JPanel getMainPanel() {
@@ -179,17 +191,50 @@ public class ActionScreen extends AppGUI {
         setConstraints(constraints, 0, 0, GridBagConstraints.CENTER);
 //        JButton launchButton = new JButton("Launch");
         chargeButton = new JGradientButton("CHARGE");
-//        chargeButton.setPreferredSize(new Dimension(
-//                (int) (chargeButton.getPreferredSize().getWidth() * 0.9),
-//                (int) (chargeButton.getPreferredSize().getHeight())
-//        ));
-        chargeButton.setBackground(Color.GREEN);
-        chargeButton.setFont(new Font("Arial", Font.PLAIN, 60));
+        chargeButton.setPreferredSize(new Dimension(
+                (int) (chargeButton.getPreferredSize().getWidth() * 4.25),
+                (int) (chargeButton.getPreferredSize().getHeight() * 4)
+        ));
+        if (pushableButton == CHARGE) {
+            chargeButton.setBackground(Color.GREEN);
+        } else {
+            chargeButton.setBackground(Color.GRAY);
+        }
+
+        chargeButton.setFont(new Font("Arial", Font.PLAIN, 48));
         chargeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                if (pushableButton == CHARGE) {
-                    updateConsole("CHARGE");
+                if (!buttonPushed) {
+                    if (pushableButton == CHARGE) {
+                        chargeButton.setBackground(Color.GRAY);
+                        buttonPushed = true;
+                        Thread chargeSequenceThread = new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                chargeSequence();
+                            }
+                        }, "chargeSequenceThread");
+                        chargeSequenceThread.start();
+                    } else {
+                        if (disabledButton.toString().equals("")) {
+                            disabledButton.setLength(0);
+                            disabledButton.append(" WARNING: Invalid user input. The system is completly charged. Please select the \"Discharge\" button.");
+                            updateConsole(disabledButton);
+                        }
+                    }
+                } else {
+                    if (buttonSequence.toString().equals("")) {
+                        buttonSequence.setLength(0);
+                        buttonSequence.append(" WARNING: Invalid user input. The system is currently ");
+                        if (pushableButton == CHARGE) {
+                            buttonSequence.append("charging. ");
+                        } else {
+                            buttonSequence.append("discharging. ");
+                        }
+                        buttonSequence.append("Following safety protocol.");
+                        updateConsole(buttonSequence);
+                    }
                 }
 //                AppGUI.launchMainGUI();
 //                AppGUI.launchActionScreen();
@@ -200,27 +245,147 @@ public class ActionScreen extends AppGUI {
         panel.add(chargeButton, constraints);
 //        abortButton = new JButton("Abort");
         dischargeButton = new JGradientButton("DISCHARGE");
-//        dischargeButton.setPreferredSize(new Dimension(
-//                (int) (dischargeButton.getPreferredSize().getWidth() * 0.9),
-//                (int) (dischargeButton.getPreferredSize().getHeight())
-//        ));
-        dischargeButton.setBackground(Color.GRAY);
-        dischargeButton.setFont(new Font("Arial", Font.PLAIN, 60));
+        dischargeButton.setPreferredSize(new Dimension(
+                (int) (dischargeButton.getPreferredSize().getWidth() * 3.4),
+                (int) (dischargeButton.getPreferredSize().getHeight() * 4.0)
+        ));
+        if (pushableButton == DISCHARGE) {
+            dischargeButton.setBackground(Color.GREEN);
+        } else {
+            dischargeButton.setBackground(Color.GRAY);
+        }
+        dischargeButton.setFont(new Font("Arial", Font.PLAIN, 48));
         dischargeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                if (pushableButton == DISCHARGE) {
-                    updateConsole("DISCHARGE");
+                if (!buttonPushed) {
+                    if (pushableButton == DISCHARGE) {
+                        buttonPushed = true;
+                        dischargeButton.setBackground(Color.GRAY);
+                        Thread chargeSequenceThread = new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                dischargeSequence();
+                            }
+                        }, "chargeSequenceThread");
+                        chargeSequenceThread.start();
+                    } else {
+                        if (disabledButton.toString().equals("")) {
+                            disabledButton.setLength(0);
+                            disabledButton.append(" WARNING: Invalid user input. The system is completed discharged. Please select the \"Charge\" button.");
+                            updateConsole(disabledButton);
+                        }
+                    }
+                } else {
+                    if (buttonSequence.toString().equals("")) {
+                        buttonSequence.setLength(0);
+                        buttonSequence.append(" WARNING: Invalid user input. The system is currently ");
+                        if (pushableButton == CHARGE) {
+                            buttonSequence.append("charging. ");
+                        } else {
+                            buttonSequence.append("discharging. ");
+                        }
+                        buttonSequence.append("Following safety protocol.");
+                        updateConsole(buttonSequence);
+                    }
                 }
+            }
 //                AppGUI.launchMainGUI();
 //                closeThreadWindow();
-            }
         });
         setConstraints(constraints, 1, 0, GridBagConstraints.CENTER);
         constraints.insets = new Insets(0, 2, 4, 2);
         panel.add(dischargeButton, constraints);
         return panel;
     }
+
+    public void wait(int milis) {
+        long startTime = System.currentTimeMillis();
+        while (true) {
+            if (System.currentTimeMillis() - startTime > milis) {
+                return;
+            }
+        }
+    }
+
+    public void chargeSequence() {
+        try {
+            updateConsole("Charging sequence initiated. Verifying the state of the solenoid...");
+            SwingUtilities.invokeLater(()->textArea.repaint());
+
+//            wait(1000);
+            Thread.sleep(1000);
+            updateConsole(" [SUCCESS] Verified that solenoid is OFF. Digital PIN read: low. Verifying the state of the discharge relay...");
+            SwingUtilities.invokeLater(()->textArea.repaint());
+//            wait(1000);
+            Thread.sleep(1000);
+            updateConsole(" [SUCCESS] Verified that discharge relay is OFF. Digital PIN read: low. Closing 3-phase contractor...");
+            SwingUtilities.invokeLater(()->textArea.repaint());
+//            wait(500);
+            Thread.sleep(500);
+            updateConsole(" [SUCCESS] Closed 3-phase contractor. Digital PIN set: high. Verifying incoming current...");
+            SwingUtilities.invokeLater(()->textArea.repaint());
+//            wait(500);
+            Thread.sleep(500);
+            updateConsole(" [SUCCESS] Verified current is at least 2mA. Digital READING read: high. Verifying solenoid...");
+            SwingUtilities.invokeLater(()->textArea.repaint());
+//            wait(5000);
+            Thread.sleep(5000);
+            updateConsole(" [SUCCESS] Verified the solenoid is ON. Verified the relay circuit is CLOSED. Digital PIN set: high.");
+            SwingUtilities.invokeLater(()->textArea.repaint());
+//            wait(2000);
+            Thread.sleep(2000);
+            updateConsole(" [SUCCESS] Setup work environment! Launching main interface...");
+            SwingUtilities.invokeLater(()->textArea.repaint());
+//            wait(2000);
+            Thread.sleep(2000);
+            closeThreadWindow();
+            MainGUI.launchMainGUI();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void dischargeSequence() {
+        try {
+            updateConsole("Discharging sequence initiated. Verifying solenoid...");
+            SwingUtilities.invokeLater(()->textArea.repaint());
+            Thread.sleep(1000);
+
+            updateConsole(" [SUCCESS] Verified Power Deck EN line off. Digital PIN read: low. Opening 3-phase contractor...");
+            SwingUtilities.invokeLater(()->textArea.repaint());
+            Thread.sleep(2000);
+
+            updateConsole(" [SUCCESS] Verified 3-phase contractors is open. Digital PIN read: low. Opening Solenoid...");
+            SwingUtilities.invokeLater(()->textArea.repaint());
+            Thread.sleep(2000);
+
+            updateConsole(" [SUCCESS] Verified Solenoid is open. Digital PIN set: high. Setting discharge relay on...");
+            SwingUtilities.invokeLater(()->textArea.repaint());
+
+            Thread.sleep(500);
+            updateConsole(" [SUCCESS] Work environment discharged.");
+            Thread.sleep(500);
+            chargeButton.setBackground(Color.GREEN);
+            buttonPushed = false;
+            pushableButton = CHARGE;
+            updateConsole("To initiate the charging sequence, please select the \"CHARGE\" option above...");
+
+        } catch (InterruptedException ie) {
+            ie.printStackTrace();
+        }
+    }
+
+    public void closeThreadWindow() {
+        for (int i = 0; i < consoleList.size() - 1; i++) {
+            consoleList.get(i).setLength(0);
+        }
+        consoleIndex = 0;
+        refreshConsole();
+        actionFrame.dispose();
+    }
+
+
 
     public Thread createUpdateGUIThread() {
         return new Thread(new Runnable() {

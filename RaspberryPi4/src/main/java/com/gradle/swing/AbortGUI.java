@@ -49,7 +49,7 @@ public class AbortGUI extends AppGUI {
                         abortText.setText(String.format("Launching in: %d", --countDown));
                         if (countDown == 0) {
                             closeThreadWindow();
-                            AppGUI.launchActionScreen();
+                            AppGUI.launchActionScreen("CHARGE");
                             return;
                         }
                         Thread.sleep(1000);
@@ -66,7 +66,7 @@ public class AbortGUI extends AppGUI {
         abortText.setText(String.format("Launching in: %d", --countDown));
         if (countDown == 0) {
             closeWindow();
-            AppGUI.launchActionScreen();
+            AppGUI.launchActionScreen("CHARGE");
 //            AppGUI.launchMainGUI();
         }
     }
@@ -99,7 +99,7 @@ public class AbortGUI extends AppGUI {
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.fill = GridBagConstraints.BOTH;
         setConstraints(constraints, 0, 0, GridBagConstraints.WEST);
-        countDown = 40;
+        countDown = 4;
         abortText = new JLabel(String.format("Launching in: %d", countDown));
         abortText.setFont(new Font("Arial", Font.PLAIN, fontSize));
         panel.add(abortText, constraints);
@@ -121,7 +121,7 @@ public class AbortGUI extends AppGUI {
 //                AppGUI.launchMainGUI();
                 countDownThread.interrupt();
 //                terminateThread.set(true);
-                AppGUI.launchActionScreen();
+                AppGUI.launchActionScreen("CHARGE");
 //                mainFrame.setVisible(true);
                 closeThreadWindow();
             }
