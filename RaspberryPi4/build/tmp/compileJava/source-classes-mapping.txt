@@ -14,7 +14,9 @@ com/gradle/backend/Current.java
 com/gradle/swing/ActionScreen.java
  com.gradle.swing.ActionScreen
  com.gradle.swing.ActionScreen$1
+ com.gradle.swing.ActionScreen$1$1
  com.gradle.swing.ActionScreen$2
+ com.gradle.swing.ActionScreen$2$1
  com.gradle.swing.ActionScreen$3
 com/gradle/backend/Voltage.java
  com.gradle.backend.Voltage

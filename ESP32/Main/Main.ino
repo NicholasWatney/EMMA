@@ -322,11 +322,31 @@ void setup()
   setupDS3502();
 }
 
+int bootAnswer = 0;
+void inline bootListen() {
+  while (true) {
+    addMessage("BL:1");
+    messageFlush();
+    updateRead();
+    if (bootAnswer == 1) {
+      bootAnswer = 0;
+      break;
+    }
+  }
+}
+
 void loop()
 {
+  //Listen for charging protocol
+  
+
+  // Execute main code
+  while (true) {
   timeClock();
-  updateDS18B20();
-  updateDS3502();
-  messageFlush();
-  updateRead();
+    updateDS18B20();
+    updateDS3502();
+    messageFlush();
+    updateRead();
+
+  }
 }

@@ -208,7 +208,7 @@ public class MainGUI extends AppGUI {
         panel.add(button_208, constraints);
 
         setConstraints(constraints, 0, 2, GridBagConstraints.FIRST_LINE_START);
-        JGradientButton button_240 = new JGradientButton("240 (½ϕ)");
+        JGradientButton button_240 = new JGradientButton("240 (Sϕ)");
         button_240.setBackground(Color.PINK);
         button_240.setFont(new Font("Arial", Font.PLAIN, 24));
         button_240.setPreferredSize(new Dimension(
@@ -231,7 +231,7 @@ public class MainGUI extends AppGUI {
                         } else {
                             if (voltageTemporary.toString().equals("")) {
                                 voltageTemporary.setLength(0);
-                                voltageTemporary.append(" WARNING: This feature is unavailable for the GT 2021 Senior Design Expo demonstration...");
+                                voltageTemporary.append(" WARNING: This feature is not permitted for the GT 2021 Senior Design Expo demonstration...");
                                 updateConsole(voltageTemporary);
                             }
                         }
@@ -1132,17 +1132,19 @@ public class MainGUI extends AppGUI {
 //        panel.add(stopButton, constraints);
 
 //        JButton resetButton = new JButton("RESET");
-        JGradientButton resetButton = new JGradientButton("RESET");
+        JGradientButton resetButton = new JGradientButton("SHUTOFF");
         resetButton.setBackground(Color.ORANGE);
         resetButton.setFont(new Font("Arial", Font.PLAIN, 40));
         resetButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                UART.uart.nullifyEverything();
-                if (UART.uart.comPort != null) {
-                    UART.resetCommand = true;
-                    UART.uart.restartESP32();
-                }
+                closeThreadWindow();
+                AppGUI.launchActionScreen("DISCHARGE");
+//                UART.uart.nullifyEverything();
+//                if (UART.uart.comPort != null) {
+//                    UART.resetCommand = true;
+//                    UART.uart.restartESP32();
+//                }
             }
         });
 
@@ -1155,6 +1157,10 @@ public class MainGUI extends AppGUI {
         panel.add(resetButton, constraints);
 
         return panel;
+    }
+
+    public void closeThreadWindow() {
+        mainFrame.dispose();
     }
 
     private void directionHandler(String direction) {
