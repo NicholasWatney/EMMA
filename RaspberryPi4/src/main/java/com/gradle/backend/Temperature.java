@@ -25,7 +25,7 @@ public class Temperature {
     private double avgFps;
     public static Map<String, Temperature> temperatureMap = new HashMap<>();
     public static ArrayList<XYSeries> temperatureList = new ArrayList<>();
-    public static final int historySize = 180;
+    public static final int historySize = 60;
     public XYSeries temperatureHistory;
     public int temperatureSample = 0;
 
@@ -79,7 +79,7 @@ public class Temperature {
             if (criticalMessage.length() != 0) {
                 criticalMessage.setLength(0);
                 String timeString = MainGUI.timeNotation(MainGUI.epochDifference);
-                timeString = timeString.substring(1, timeString.length() - 1) + ": ";
+                timeString = " " + timeString.substring(1, timeString.length() - 1) + ": ";
                 criticalMessage.append(timeString);
                 criticalMessage.append("[ OFFLINE ] " + getTemperatureLabel().getText());
                 MainGUI.mainGUI.refreshConsole();
@@ -92,7 +92,7 @@ public class Temperature {
         } else if (temperatureReading > temperatureCritical) {
             criticalMessage.setLength(0);
             String timeString = MainGUI.timeNotation(MainGUI.epochDifference);
-            timeString = timeString.substring(1, timeString.length() - 1) + ": ";
+            timeString = " " + timeString.substring(1, timeString.length() - 1) + ": ";
             criticalMessage.append(timeString);
             criticalMessage.append("[ CRITICAL ] " + getTemperatureLabel().getText());
             if (!inConsole) {
@@ -114,7 +114,7 @@ public class Temperature {
             if (criticalMessage.length() != 0) {
                 criticalMessage.setLength(0);
                 String timeString = MainGUI.timeNotation(MainGUI.epochDifference);
-                timeString = timeString.substring(1, timeString.length() - 1) + ": ";
+                timeString = " " + timeString.substring(1, timeString.length() - 1) + ": ";
                 criticalMessage.append(timeString);
                 criticalMessage.append("[WARNING] " + getTemperatureLabel().getText());
                 MainGUI.mainGUI.refreshConsole();
@@ -128,7 +128,7 @@ public class Temperature {
             if (criticalMessage.length() != 0) {
                 criticalMessage.setLength(0);
                 String timeString = MainGUI.timeNotation(MainGUI.epochDifference);
-                timeString = timeString.substring(1, timeString.length() - 1) + ": ";
+                timeString = " " + timeString.substring(1, timeString.length() - 1) + ": ";
                 criticalMessage.append(timeString);
                 criticalMessage.append("[ NORMAL ] " + getTemperatureLabel().getText());
                 MainGUI.mainGUI.refreshConsole();

@@ -15,6 +15,8 @@ import org.jfree.data.xy.XYSeriesCollection;
 import javax.swing.*;
 import javax.swing.Timer;
 import javax.swing.border.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -48,13 +50,31 @@ public class MainGUI extends AppGUI {
     JTextPane textPane;
     public static MainGUI mainGUI;
 
-    public static int current_voltage;
+    public int max_current;
     public int current_current;
+    public int min_current;
+
+    public int max_frequency;
     public int current_frequency;
+    public int min_frequency;
+
+    public int max_voltage;
+    public static int current_voltage;
+    public int min_voltage;
+
 
     public final int TEMPERATURE = 0;
     public final int CURRENT = 1;
     public final int VOLTAGE = 2;
+
+    public StringBuilder frequencyThreshold;
+    public StringBuilder currentThreshold;
+    public StringBuilder voltageThreshold;
+    public StringBuilder voltageTemporary;
+
+    private static final boolean fixed_208 = true;
+
+    public StringBuilder voltage_source;
 
     public JGradientButton startButton;
     public JGradientButton stopButton;
@@ -153,7 +173,12 @@ public class MainGUI extends AppGUI {
     }
 
     protected JPanel getVoltageButtonsPanel() {
+        voltage_source = new StringBuilder("");
+        max_voltage = 240;
         current_voltage = 208;
+        min_voltage = 120;
+        voltageThreshold = new StringBuilder("");
+        voltageTemporary = new StringBuilder("");
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.insets = new Insets(2, 2, 2, 2);
@@ -196,12 +221,29 @@ public class MainGUI extends AppGUI {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 if (current_voltage != 120) {
-                    current_voltage = 120;
-                    button_120.setBackground(new Color(color.getRed() - 100, color.getGreen() - 50, color.getBlue() + 50));
-                    button_208.setBackground(Color.PINK);
-                    button_240.setBackground(Color.PINK);
-                    updateConsole("Setting Voltage Source to: " + current_voltage + "V");
+                    if (start_stopButton.getText().equals("START")) {
+                        if (fixed_208 == false) {
+                            current_voltage = 120;
+                            button_120.setBackground(new Color(color.getRed() - 100, color.getGreen() - 50, color.getBlue() + 50));
+                            button_208.setBackground(Color.PINK);
+                            button_240.setBackground(Color.PINK);
+                            updateConsole("Setting voltage source to: " + current_voltage + "V");
+                        } else {
+                            if (voltageTemporary.toString().equals("")) {
+                                voltageTemporary.setLength(0);
+                                voltageTemporary.append(" WARNING: This feature is unavailable for the GT 2021 Senior Design Expo demonstration...");
+                                updateConsole(voltageTemporary);
+                            }
+                        }
+                    } else {
+                        if (voltageThreshold.toString().equals("")) {
+                            voltageThreshold.setLength(0);
+                            voltageThreshold.append(" WARNING: Cannot modify the voltage source when EMMA is active. Please press the \"STOP\" button first.");
+                            updateConsole(voltageThreshold);
+                        }
+                    }
                 }
+
             }
         });
 
@@ -209,12 +251,20 @@ public class MainGUI extends AppGUI {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 if (current_voltage != 208) {
-                    current_voltage = 208;
-                    button_208.setBackground(new Color(color.getRed() - 100, color.getGreen() - 50, color.getBlue() + 50));
-                    button_120.setBackground(Color.PINK);
-                    button_240.setBackground(Color.PINK);
-                    updateConsole("Setting Voltage Source to: " + current_voltage + "V");
+                    if (start_stopButton.getText().equals("START")) {
+                        current_voltage = 208;
+                        button_208.setBackground(new Color(color.getRed() - 100, color.getGreen() - 50, color.getBlue() + 50));
+                        button_120.setBackground(Color.PINK);
+                        button_240.setBackground(Color.PINK);
+                        updateConsole("Setting voltage source to: " + current_voltage + "V");
 
+                    } else {
+                        if (voltageThreshold.toString().equals("")) {
+                            voltageThreshold.setLength(0);
+                            voltageThreshold.append(" WARNING: Cannot modify the voltage source when EMMA is active. Please press the \"STOP\" button first.");
+                            updateConsole(voltageThreshold);
+                        }
+                    }
                 }
             }
         });
@@ -223,11 +273,27 @@ public class MainGUI extends AppGUI {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 if (current_voltage != 240) {
-                    current_voltage = 240;
-                    button_240.setBackground(new Color(color.getRed() - 100, color.getGreen() - 50, color.getBlue() + 50));
-                    button_120.setBackground(Color.PINK);
-                    button_208.setBackground(Color.PINK);
-                    updateConsole("Setting Voltage Source to: " + current_voltage + "V");
+                    if (start_stopButton.getText().equals("START")) {
+                        if (fixed_208 == false) {
+                        current_voltage = 240;
+                        button_240.setBackground(new Color(color.getRed() - 100, color.getGreen() - 50, color.getBlue() + 50));
+                        button_120.setBackground(Color.PINK);
+                        button_208.setBackground(Color.PINK);
+                        updateConsole("Setting voltage source to: " + current_voltage + "V");
+                    } else {
+                            if (voltageTemporary.toString().equals("")) {
+                                voltageTemporary.setLength(0);
+                                voltageTemporary.append(" WARNING: This feature is unavailable for the GT 2021 Senior Design Expo demonstration...");
+                                updateConsole(voltageTemporary);
+                            }
+                        }
+                    } else {
+                        if (voltageThreshold.toString().equals("")) {
+                            voltageThreshold.setLength(0);
+                            voltageThreshold.append(" WARNING: Cannot modify the voltage source when EMMA is active. Please press the \"STOP\" button first.");
+                            updateConsole(voltageThreshold);
+                        }
+                    }
                 }
             }
         });
@@ -235,7 +301,10 @@ public class MainGUI extends AppGUI {
     }
 
     protected JPanel getFrequencyThresholdPanel() {
+        max_frequency = 50;
         current_frequency = 40;
+        min_frequency = 25;
+        frequencyThreshold = new StringBuilder("");
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.fill = GridBagConstraints.BOTH;
@@ -243,7 +312,7 @@ public class MainGUI extends AppGUI {
 
         setConstraints(constraints, 0, 0, GridBagConstraints.LAST_LINE_END);
         JPanel maxPanel = new JPanel();
-        JLabel maxLabel = new JLabel("50kHz");
+        JLabel maxLabel = new JLabel(max_frequency + "kHz");
 //        maxPanel.setPreferredSize(new Dimension(
 //                (int) (maxPanel.getPreferredSize().getWidth() * 1),
 //                (int) (maxPanel.getPreferredSize().getHeight() * 1.15)
@@ -265,7 +334,7 @@ public class MainGUI extends AppGUI {
 
         setConstraints(constraints, 0, 2, GridBagConstraints.LAST_LINE_END);
         JPanel minPanel = new JPanel();
-        JLabel minLabel = new JLabel("25kHz");
+        JLabel minLabel = new JLabel(min_frequency + "kHz");
 //        minPanel.setPreferredSize(new Dimension(
 //                    (int) (minPanel.getPreferredSize().getWidth() * 1),
 //                    (int) (minPanel.getPreferredSize().getHeight() * 1.15)
@@ -277,6 +346,35 @@ public class MainGUI extends AppGUI {
         setConstraints(constraints, 0, 3, GridBagConstraints.LAST_LINE_END);
         constraints.insets.set(6, 2, 2, 2);
         JGradientButton increase = new JGradientButton("+");
+        increase.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                if (start_stopButton.getText().equals("START")) {
+                    Color color = Color.PINK;
+                    increase.setBackground(new Color(color.getRed() - 100, color.getGreen() - 50, color.getBlue() + 50));
+                    increase.repaint();
+                    if (current_frequency < max_frequency) {
+                        current_frequency++;
+                        currentLabel.setText(current_frequency + "kHz");
+                        currentLabel.repaint();
+                    }
+                    try {
+                        Thread.sleep(0);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    increase.setBackground(color);
+                    increase.repaint();
+                } else {
+                    if (frequencyThreshold.toString().equals("")) {
+                        frequencyThreshold.setLength(0);
+                        frequencyThreshold.append(" WARNING: Cannot modify the frequency threshold when EMMA is active. Please press the \"STOP\" button first.");
+                        updateConsole(frequencyThreshold);
+                    }
+                }
+            }
+        });
+
         increase.setBackground(Color.PINK);
         increase.setFont(new Font("Arial", Font.PLAIN, 24));
         increase.setPreferredSize(new Dimension(
@@ -294,13 +392,44 @@ public class MainGUI extends AppGUI {
                 (int) (decrease.getPreferredSize().getWidth() * 3.0),
                 (int) (decrease.getPreferredSize().getHeight() * 1.08)
         ));
+
+        decrease.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                if (start_stopButton.getText().equals("START")) {
+                    Color color = Color.PINK;
+                    decrease.setBackground(new Color(color.getRed() - 100, color.getGreen() - 50, color.getBlue() + 50));
+                    decrease.repaint();
+                    if (current_frequency > min_frequency) {
+                        current_frequency--;
+                        currentLabel.setText(current_frequency + "kHz");
+                        currentLabel.repaint();
+                    }
+                    try {
+                        Thread.sleep(0);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    decrease.setBackground(color);
+                    decrease.repaint();
+                } else {
+                    if (frequencyThreshold.toString().equals("")) {
+                        frequencyThreshold.setLength(0);
+                        frequencyThreshold.append(" [WARNING] Cannot modify the frequency threshold when EMMA is active. Please press the \"STOP\" button first.");
+                        updateConsole(frequencyThreshold);
+                    }
+                }
+            }
+        });
         panel.add(decrease, constraints);
         return panel;
     }
 
-
     protected JPanel getCurrentThresholdPanel() {
+        max_current = 30;
         current_current = 24;
+        min_current = 10;
+        currentThreshold = new StringBuilder("");
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.fill = GridBagConstraints.BOTH;
@@ -308,7 +437,7 @@ public class MainGUI extends AppGUI {
 
         setConstraints(constraints, 0, 0, GridBagConstraints.LAST_LINE_END);
         JPanel maxPanel = new JPanel();
-        JLabel maxLabel = new JLabel("30A");
+        JLabel maxLabel = new JLabel(max_current + "A");
 //        maxPanel.setPreferredSize(new Dimension(
 //                (int) (maxPanel.getPreferredSize().getWidth() * 1),
 //                (int) (maxPanel.getPreferredSize().getHeight() * 1.15)
@@ -330,7 +459,7 @@ public class MainGUI extends AppGUI {
 
         setConstraints(constraints, 0, 2, GridBagConstraints.LAST_LINE_END);
         JPanel minPanel = new JPanel();
-        JLabel minLabel = new JLabel("10A");
+        JLabel minLabel = new JLabel(min_current + "A");
 //        minPanel.setPreferredSize(new Dimension(
 //                    (int) (minPanel.getPreferredSize().getWidth() * 1),
 //                    (int) (minPanel.getPreferredSize().getHeight() * 1.15)
@@ -360,6 +489,64 @@ public class MainGUI extends AppGUI {
                 (int) (decrease.getPreferredSize().getHeight() * 1.08)
         ));
         panel.add(decrease, constraints);
+
+        increase.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                Color color = Color.PINK;
+                increase.setBackground(new Color(color.getRed() - 100, color.getGreen() - 50, color.getBlue() + 50));
+                increase.repaint();
+                if (current_current < max_current) {
+                    if (start_stopButton.getText().equals("START")) {
+                        current_current++;
+                        currentLabel.setText(current_current + "A");
+                        currentLabel.repaint();
+                    } else {
+                        if (currentThreshold.toString().equals("")) {
+                            currentThreshold.setLength(0);
+                            currentThreshold.append(" WARNING: Cannot modify the current threshold when EMMA is active. Please press the \"STOP\" button first.");
+                            updateConsole(currentThreshold);
+                        }
+                    }
+                }
+                try {
+                    Thread.sleep(0);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                increase.setBackground(color);
+                increase.repaint();
+            }
+        });
+
+        decrease.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                Color color = Color.PINK;
+                decrease.setBackground(new Color(color.getRed() - 100, color.getGreen() - 50, color.getBlue() + 50));
+                decrease.repaint();
+                if (current_current > min_current) {
+                    if (start_stopButton.getText().equals("START")) {
+                        current_current--;
+                        currentLabel.setText(current_current + "A");
+                        currentLabel.repaint();
+                    } else {
+                        if (voltageThreshold.toString().equals("")) {
+                            voltageThreshold.setLength(0);
+                            voltageThreshold.append(" WARNING: Cannot modify the current threshold when EMMA is active. Please press the \"STOP\" button first.");
+                            updateConsole(voltageThreshold);
+                        }
+                    }
+                }
+                try {
+                    Thread.sleep(0);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                decrease.setBackground(color);
+                decrease.repaint();
+            }
+        });
         return panel;
     }
 
@@ -507,7 +694,7 @@ public class MainGUI extends AppGUI {
     public void updateConsole(String message) {
         StringBuilder updatedLine = new StringBuilder();
         String timeString = timeNotation(epochDifference);
-        timeString = timeString.substring(1, timeString.length() - 1) + ": ";
+        timeString = " " + timeString.substring(1, timeString.length() - 1) + ": ";
         updatedLine.append(timeString);
         updatedLine.append(message);
         updateConsoleHelper(updatedLine);

@@ -6,12 +6,14 @@ import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class AbortGUI extends AppGUI {
 
     private JLabel abortText;
     private JGradientButton abortButton;
     private int countDown;
+    private Thread countDownThread;
     private Timer timer;
     private static final int fontSize = 72;
 
@@ -32,7 +34,41 @@ public class AbortGUI extends AppGUI {
         abortFrame.setExtendedState(Frame.MAXIMIZED_BOTH);
         abortFrame.setUndecorated(true);
         abortFrame.setVisible(true);
-        initializeAndStartTimer();
+
+        countDownThread = createTimeFieldThread();
+        countDownThread.start();
+//        initializeAndStartTimer();
+    }
+
+    private Thread createTimeFieldThread() {
+        return new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    try {
+                        abortText.setText(String.format("Launching in: %d", --countDown));
+                        if (countDown == 0) {
+                            closeThreadWindow();
+                            AppGUI.launchActionScreen();
+                            return;
+                        }
+                        Thread.sleep(1000);
+                    } catch (InterruptedException ie) {
+                        return;
+                    }
+                }
+            }
+        }, "TimeFieldThread");
+    }
+
+
+    private void updateTimerFieldThread() {
+        abortText.setText(String.format("Launching in: %d", --countDown));
+        if (countDown == 0) {
+            closeWindow();
+            AppGUI.launchActionScreen();
+//            AppGUI.launchMainGUI();
+        }
     }
 
     private JPanel getMainPanel() {
@@ -42,6 +78,11 @@ public class AbortGUI extends AppGUI {
         border.setTitleFont(new Font("Arial", Font.PLAIN, fontSize));
         border.setTitleJustification(TitledBorder.CENTER);
         border.setBorder(new StrokeBorder(new BasicStroke(5.0f)));
+//        TitledBorder border = BorderFactory.createTitledBorder("EMMA Application");
+//        border.setTitleFont(new Font("Arial", Font.BOLD, 12));
+//        border.setTitleJustification(TitledBorder.CENTER);
+//        border.setBorder(new StrokeBorder(new BasicStroke(1.0f)));
+
         panel.setBorder(border);
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.fill = GridBagConstraints.BOTH;
@@ -58,7 +99,7 @@ public class AbortGUI extends AppGUI {
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.fill = GridBagConstraints.BOTH;
         setConstraints(constraints, 0, 0, GridBagConstraints.WEST);
-        countDown = 3;
+        countDown = 40;
         abortText = new JLabel(String.format("Launching in: %d", countDown));
         abortText.setFont(new Font("Arial", Font.PLAIN, fontSize));
         panel.add(abortText, constraints);
@@ -77,8 +118,12 @@ public class AbortGUI extends AppGUI {
         launchButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                AppGUI.launchMainGUI();
-                closeWindow();
+//                AppGUI.launchMainGUI();
+                countDownThread.interrupt();
+//                terminateThread.set(true);
+                AppGUI.launchActionScreen();
+//                mainFrame.setVisible(true);
+                closeThreadWindow();
             }
         });
         constraints.insets = new Insets(10, 30, 10, 10);
@@ -90,7 +135,8 @@ public class AbortGUI extends AppGUI {
         abortButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                closeWindow();
+                countDownThread.interrupt();
+                closeThreadWindow();
                 System.exit(0);
             }
         });
@@ -103,6 +149,11 @@ public class AbortGUI extends AppGUI {
     private void closeWindow() {
         abortFrame.dispose();
         timer.stop();
+    }
+
+    private void closeThreadWindow() {
+        abortFrame.dispose();
+//        timer.stop();
     }
 
     private void initializeAndStartTimer() {

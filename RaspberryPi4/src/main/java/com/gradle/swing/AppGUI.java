@@ -41,13 +41,22 @@ public abstract class AppGUI {
 
     protected JFrame abortFrame;
     protected JFrame mainFrame;
+    protected JFrame actionFrame;
+
+
     public static Color borderColor = new Color(95, 123, 184);
 
     protected static TitledBorder mainBorder;
+    protected static TitledBorder actionBorder;
 
     protected static void launchAbortScreen() {
         AbortGUI abortScreen = new AbortGUI();
         abortScreen.buildGUI();
+    }
+
+    protected static void launchActionScreen() {
+        ActionScreen.actionScreen = new ActionScreen();
+        ActionScreen.actionScreen.buildGUI();
     }
 
     protected static void launchMainGUI() {
@@ -96,9 +105,22 @@ public abstract class AppGUI {
         return panel;
     }
 
+    protected static JPanel getActionBorderPanel(JPanel inside, String title, Insets insets) {
+        JPanel panel = new JPanel(new GridBagLayout());
+        actionBorder = BorderFactory.createTitledBorder(title);
+        actionBorder.setTitleFont(new Font("Arial", Font.BOLD, 12));
+        actionBorder.setTitleJustification(TitledBorder.CENTER);
+        actionBorder.setBorder(new StrokeBorder(new BasicStroke(1.0f)));
+        panel.setBorder(actionBorder);
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.insets = insets;
+        panel.add(inside, constraints);
+        return panel;
+    }
+
     protected static JPanel getBorderPanel(JPanel inside, String title, Insets insets,
-                                           Border border, int titleJusitification, int titlePosition,
-                                           Font titleFont, Color titleColor) {
+                                       Border border, int titleJusitification, int titlePosition,
+                                       Font titleFont, Color titleColor) {
         JPanel panel = new JPanel(new GridBagLayout());
         panel.setBorder(BorderFactory.createTitledBorder(title));
         GridBagConstraints constraints = new GridBagConstraints();
