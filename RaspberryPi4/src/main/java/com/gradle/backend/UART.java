@@ -66,13 +66,13 @@ public class UART {
         boolean attemptToConnect = false;
         while (true) {
             if (connectToESP32()) {
-                updateConsole("Connected to " + uart.comPort);
-                updateConsole("Setting Voltage Source to: " + MainGUI.current_voltage + "V");
+                updateConsole("Connected the " + uart.comPort);
+                updateConsole("Setting voltage source to: " + MainGUI.current_voltage + "V");
                 createReadUARTThread().start();
                 break;
             }
             if (!attemptToConnect) {
-                updateConsole("ESP32 Microcontroller is not connected RPi4. Waiting on connection...");
+                updateConsole("ESP32 Microcontroller is not connected to the RPi4. Waiting for a connection to be established...");
                 attemptToConnect = true;
             }
 
@@ -321,10 +321,10 @@ public class UART {
 
                     if (parseableCount == 1) {
                         if (resetCommand) {
-                            updateConsole("Restart Requested. Restarting ESP32...");
+                            updateConsole("Restart requested. Restarting ESP32 microcontroller...");
                             resetCommand = false;
                         } else {
-                            updateConsole("Corrupted Serial Bus. Restarting ESP32...");
+                            updateConsole("Flushing the serial bus. Restarting the ESP32 microcontroller...");
                         }
                     }
 
@@ -337,7 +337,7 @@ public class UART {
 
                 if (parseableCount > 0) {
                     parseableCount = 0;
-                    updateConsole("Restarted ESP32 Successfully!");
+                    updateConsole("Restarted the ESP32 microcontroller successfully!");
                 }
 
                 if (parse == ';') {
