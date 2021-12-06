@@ -104,12 +104,14 @@ public class MainGUI extends AppGUI {
         mainFrame.setLocationRelativeTo(null);
         mainFrame.setExtendedState(Frame.MAXIMIZED_BOTH);
         mainFrame.setUndecorated(true);
+        UART.uart.initializeDataSet();
         mainFrame.setVisible(true);
-        UART uart = new UART();
-        Thread connectToUARTThread = uart.createConnectToUARTThread();
+
+//        UART uart = new UART();
+//        Thread connectToUARTThread = uart.createConnectToUARTThread();
+//        connectToUARTThread.start();
         Thread updateGUIThread = createUpdateGUIThread();
         updateGUIThread.start();
-        connectToUARTThread.start();
     }
 
     public Thread createUpdateGUIThread() {
@@ -629,7 +631,7 @@ public class MainGUI extends AppGUI {
 //        constraints.gridheight = 2;
         setConstraints(constraints, 0, 0, GridBagConstraints.LAST_LINE_END);
         constraints.insets = new Insets(0, 0, 0, 0);
-        panel.add(getBorderPanel(getTemperaturePanel(), "Temperature:"), constraints);
+        panel.add(getBorderPanel(getTemperaturePanel(), "Temperature:"), constraints); // get Temperature
         setConstraints(constraints, 1, 0, GridBagConstraints.FIRST_LINE_START);
         constraints.insets = new Insets(7, 6, 2, 0);
         panel.add(getBorderPanel(getTemperaturePrecaution()), constraints);
@@ -1160,6 +1162,7 @@ public class MainGUI extends AppGUI {
     }
 
     public void closeThreadWindow() {
+        AppGUI.MainApp.set(false);
         mainFrame.dispose();
     }
 
