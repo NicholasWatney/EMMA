@@ -1,5 +1,8 @@
   
-
+#define SAFETY_DISCHARGE_RELAY 17
+#define TP_CONTACTOR 19
+#define POWER_DECK_SOLENOID 18
+#define POWER_DECK_ENABLE 23
 
 #define ONBOARD_LED 2
 boolean ledState = false;
@@ -146,19 +149,20 @@ boolean equals(std::string first, std::string second)
 }
 
 int startedUp = 0;
-int buAnswer = 0;
+int blAnswer = 0;
 
 int cuAnswer = 0;
-int srlAnswer = 0;
-int rshAnswer = 0;
-int cslAnswer = 0;
-int srhAnswer = 0;
-
-
+int sdAnswer = 0;
 int dcAnswer = 0;
-int pslAnswer = 0;
-int rslAnswer = 0;
-//int srlAnswer = 0;
+
+int dslAnswer = 0; 
+int cslAnswer = 0; 
+int rshAnswer = 0;
+
+int rslAnswer = 0; 
+int dshAnswer = 0; 
+int cshAnswer = 0; 
+int eslAnswer = 0;
 
 void inline process(std::string parsed)
 {
@@ -174,42 +178,45 @@ void inline process(std::string parsed)
     }
   }
   else if (equals(label, "BL")) {
-    buAnswer = 1;
+    blAnswer = 1;
   }
   
   else if (equals(label, "CU")) {
+    LEDSwitch();
     cuAnswer = 1;
   }
-
-  else if (equals(label, "SRL")) {
-    srlAnswer = 1;
+  else if (equals(label, "SD")) {
+    sdAnswer = 1;
   }
-
-  else if (equals(label, "RSH")) {
-    rshAnswer = 1;
+  else if (equals(label, "DC")) {
+    LEDSwitch();
+    dcAnswer = 1;
   }
-
+  
+  else if (equals(label, "DSL")) {
+    dslAnswer = 1;
+  }
   else if (equals(label, "CSL")) {
     cslAnswer = 1;
   }
-
-  else if (equals(label, "SRH")) {
-    srhAnswer = 1;
+  else if (equals(label, "RSH")) {
+    rshAnswer = 1;
   }
-
-  else if (equals(label, "DC")) {
-    dcAnswer = 1;
-  }
-
-  else if (equals(label, "PSL")) {
-    pslAnswer = 1;
-  }
-
+  //
   else if (equals(label, "RSL")) {
     rslAnswer = 1;
   }
+  else if (equals(label, "DSH")) {
+    dshAnswer = 1;
+  }
+  else if (equals(label, "CSH")) {
+    cshAnswer = 1;
+  }
+  else if (equals(label, "ESL")) {
+    eslAnswer = 1;
+  }
+  
 }
-
 
 #define LM35_DELAY 50
 unsigned long clockLM35 = 0;
@@ -250,7 +257,7 @@ void inline updateDS18B20()
   }
 }
 
-#define READ_DELAY 100
+#define READ_DELAY 50
 std::string parsed = "";
 unsigned long readClock = 0;
 void inline updateRead()
@@ -278,8 +285,6 @@ void inline timeClock()
   timeDifference = currentTime - oldTime;
   oldTime = currentTime;
 }
-
-
 
 void inline setupLEDs()
 {
@@ -349,10 +354,24 @@ void inline updateDS3502()
   }
 }
 
-void setup()
+void setupPins()
 {
   pinMode(ONBOARD_LED,OUTPUT);
+  pinMode(SAFETY_DISCHARGE_RELAY, OUTPUT);
+  pinMode(TP_CONTACTOR, OUTPUT);
+  pinMode(POWER_DECK_SOLENOID, OUTPUT);
+  pinMode(POWER_DECK_ENABLE, OUTPUT);
+
+  digitalWrite(SAFETY_DISCHARGE_RELAY, HIGH);
+  digitalWrite(TP_CONTACTOR, HIGH);
+  digitalWrite(POWER_DECK_SOLENOID, HIGH);
+  digitalWrite(POWER_DECK_ENABLE, HIGH);
+}
+
+void setup()
+{
   Serial.begin(57600);
+  setupPins();
   setupQuickSensors();
 //  setupDS3502();
 }
@@ -362,10 +381,10 @@ void inline bootListen() {
   while (true) {
     addMessage("BL:0");
     messageFlush();
-    delay(1000);
+    delay(100);
     updateRead();
-    if (buAnswer == 1) {
-      buAnswer = 0;
+    if (blAnswer == 1) {
+      blAnswer = 0;
       break;
     }
     else if (cuAnswer == 1) {
@@ -375,114 +394,161 @@ void inline bootListen() {
   }
 }
 
+void inline kill100(int t) {
+  int count = 0;
+  while (count < t) {
+    updateRead();
+    count = count + 100;
+    delay(100);
+  }
+}
 
 void inline chargeUp() {
+
   while (true) {
     addMessage("CU:0");
     messageFlush();
-    delay(1000);
+    delay(500);
     updateRead();
     if (cuAnswer == 1) {
       cuAnswer = 0;
       break;
     }
   }
+  
+  addMessage("RSH:0");
+  kill100(100);
+  
+  digitalWrite(SAFETY_DISCHARGE_RELAY, HIGH);
 
-  //SRL
-  while (true) {
-    addMessage("SRL:0");
-    messageFlush();
-    delay(1000);
-    updateRead();
-    if (srlAnswer == 1) {
-      srlAnswer = 0;
-      break;
-    }
-  }
+//  while (true) {
+//    addMessage("RSH:0");
+//    messageFlush();
+//    delay(500);
+//    updateRead();
+//    if (rshAnswer == 1) {
+//      rshAnswer = 0;
+//      break;
+//    }
+//  }
+
+  kill100(1000);
+//  delay(1000);
+  digitalWrite(TP_CONTACTOR, LOW);
   
-  //RSL
-  while (true) {
-    addMessage("RSH:0");
-    messageFlush();
-    delay(1000);
-    updateRead();
-    if (rshAnswer == 1) {
-      rshAnswer = 0;
-      break;
-    }
-  }
+//  while (true) {
+//    addMessage("CSL:0");
+//    messageFlush();
+//    delay(500);
+//    updateRead();
+//    if (cslAnswer == 1) {
+//      cslAnswer = 0;
+//      break;
+//    }
+//  }
+
+  kill100(3000);
+//  delay(3000);
+  digitalWrite(POWER_DECK_SOLENOID, LOW);
   
-  //CSC
-  while (true) {
-    addMessage("CSL:0");
-    messageFlush();
-    delay(1000);
-    updateRead();
-    if (cslAnswer == 1) {
-      cslAnswer = 0;
-      break;
-    }
-  }
-  
-  //SRH
-  while (true) {
-    addMessage("SRH:0");
-    messageFlush();
-    delay(1000);
-    updateRead();
-    if (srhAnswer == 1) {
-      srhAnswer = 0;
-      break;
-    }
-  }
-  
+//  while (true) {
+//    addMessage("DSL:0");
+//    messageFlush();
+//    delay(500);
+//    updateRead();
+//    if (dslAnswer == 1) {
+//      dslAnswer = 0;
+//      break;
+//    }
+//  }
+
   return;
 }
 
 void inline discharge() {
-  while (true) {
-    addMessage("DC:0");
-    messageFlush();
-    delay(1000);
-    updateRead();
-    if (dcAnswer == 1) {
-      dcAnswer = 0;
-      break;
-    }
-  }
+//  while (true) {
+//    addMessage("DC:0");
+//    messageFlush();
+//    delay(500);
+//    updateRead();
+//    if (dcAnswer == 1) {
+//      dcAnswer = 0; 
+//      break;
+//    }
+//  }
 
-  while (true) {
-    addMessage("PSL:0");
-    messageFlush();
-    delay(1000);
-    updateRead();
-    if (pslAnswer == 1) {
-      pslAnswer = 0;
-      break;
-    }
-  }
+  addMessage("ESL:0");
+  messageFlush();
+  kill100(100);
+
+  digitalWrite(POWER_DECK_ENABLE, LOW);
+
+//  while (true) {
+//    addMessage("ESL:0");
+//    messageFlush();
+//    delay(500);
+//    updateRead();
+//    if (eslAnswer == 1) {
+//      eslAnswer = 0;
+//      break;
+//    }
+//  }
+  kill100(100);
+  digitalWrite(TP_CONTACTOR, HIGH);
   
-  while (true) {
-    addMessage("RSL:0");
-    messageFlush();
-    delay(1000);
-    updateRead();
-    if (rslAnswer == 1) {
-      rslAnswer = 0;
-      break;
-    }
-  }
+//  while (true) {
+//    addMessage("CSH:0");
+//    messageFlush();
+//    delay(500);
+//    updateRead();
+//    if (cshAnswer == 1) {
+//      cshAnswer = 0; 
+//      break;
+//    }
+//  }
+  kill100(3000);
+//  delay(3000);
+  digitalWrite(POWER_DECK_SOLENOID, HIGH);
 
-  while (true) {
-    addMessage("SRL:0");
-    messageFlush();
-    delay(1000);
-    updateRead();
-    if (srlAnswer == 1) {
-      srlAnswer = 0;
-      break;
-    }
-  }
+//  while (true) {
+//    addMessage("DSH:0");
+//    messageFlush();
+//    delay(500);
+//    updateRead();
+//    if (dshAnswer == 1) {
+//      dshAnswer = 0; 
+//      break;
+//    }
+//  }
+  kill100(1000);
+//  delay(1000);
+  digitalWrite(SAFETY_DISCHARGE_RELAY, LOW);
+
+//  while (true) {
+//    addMessage("RSL:0");
+//    messageFlush();
+//    delay(500);
+//    updateRead();
+//    if (rslAnswer == 1) {
+//      rslAnswer = 0; 
+//      break;
+//    }
+//  }
+  kill100(100);
+//  delay(3000);
+  
+//  while (true) {
+//    addMessage("RSH:0");
+//    messageFlush();
+//    delay(500);
+//    updateRead();
+//    if (rshAnswer == 1) {
+//      rshAnswer = 0; 
+//      break;
+//    }
+//  }
+
+  digitalWrite(SAFETY_DISCHARGE_RELAY, HIGH);  
   return;
 }
 
@@ -490,9 +556,13 @@ void inline mainApp() {
   while (true) {
     timeClock();
     updateDS18B20();
-    updateDS3502();
+//    updateDS3502();
     messageFlush();
     updateRead();
+    if (dcAnswer == 1) {
+      dcAnswer = 0;
+      return;
+    }
   }
 }
 
