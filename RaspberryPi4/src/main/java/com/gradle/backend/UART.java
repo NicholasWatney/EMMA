@@ -51,7 +51,10 @@ public class UART {
         }
         initializeDataSet();
 
-        comPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 0, 0);
+//        comPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 0, 0);
+        comPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_BLOCKING, 0, 0);
+//        comPort.setComPortTimeouts(SerialPort.TIMEOUT_NONBLOCKING, 0, 0);
+//        comPort.setComPortTimeouts(SerialPort.TIMEOUT_WRITE_BLOCKING, 0, 0);
         comPort.setBaudRate(57600);
         return true;
     }
@@ -139,27 +142,78 @@ public class UART {
 
         if (label.equals("BL") && value.equals("0")) {
             writeUART("BL;");
-            return;
-        } else if (label.equals("SRL") && value.equals("0")) {
-            ActionScreen.solenoid_read_low.set(1);
-            writeUART("SRL;");
-            return;
+//            try {
+//                Thread.sleep(500);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//            return;
+//        } else if (label.equals("DC") && value.equals("0")) {
+//            ActionScreen.discharge_present.set(1);
         } else if (label.equals("RSH") && value.equals("0")) {
             ActionScreen.relay_set_high.set(1);
-            writeUART("RSH;");
+//            writeUART("RSH;");
+//            try {
+//                Thread.sleep(500);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
             return;
-        } else if (label.equals("CSL") && value.equals("0")) {
-            ActionScreen.contactor_set_low.set(1);
-            writeUART("CSL;");
+//        } else if (label.equals("CSL") && value.equals("0")) {
+//            ActionScreen.contactor_set_low.set(1);
+//            writeUART("CSL;");
+//            try {
+//                Thread.sleep(500);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//            return;
+//        } else if (label.equals("DSL") && value.equals("0")) {
+//            ActionScreen.deck_set_low.set(1);
+//            writeUART("DSL;");
+//            try {
+//                Thread.sleep(500);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//            return;
+        } else if (label.equals("ESL") && value.equals("0")) {
+            ActionScreen.enable_set_low.set(1);
+//            writeUART("ESL;");
+//            try {
+//                Thread.sleep(500);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
             return;
-        } else if (label.equals("SRH") && value.equals("0")) {
-            ActionScreen.solenoid_read_low.set(0);
-            writeUART("SRH;");
-            return;
-        } else if (label.equals("PSL") && value.equals("0")) {
-            ActionScreen.power_set_high.set(0);
-            writeUART("PSL;");
-        } else if (label.equals("R")) {}
+//        } else if (label.equals("CSH") && value.equals("0")) {
+//            ActionScreen.contactor_set_low.set(0);
+//            writeUART("CSH;");
+//            try {
+//                Thread.sleep(500);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//            return;
+//        } else if (label.equals("DSH") && value.equals("0")) {
+//            ActionScreen.deck_set_low.set(0);
+//            writeUART("DSH;");
+//            try {
+//                Thread.sleep(500);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//            return;
+//        } else if (label.equals("RSL") && value.equals("0")) {
+//            ActionScreen.relay_set_high.set(0);
+//            writeUART("RSL;");
+//            try {
+//                Thread.sleep(500);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//            return;
+        }
 
         Object sensor = dataMap.get(label);
         if (sensor != null) {
@@ -286,7 +340,7 @@ public class UART {
         int bufferCount = 0;
         int connectCount = 0;
         int parseableCount = 0;
-        UART.writeUART("RES;");
+        writeUART("RES;");
         while (true) {
 
             try {
@@ -306,7 +360,6 @@ public class UART {
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException ie) {
-                    ie.printStackTrace();
                 }
 
                 continue;
@@ -320,9 +373,9 @@ public class UART {
             if (bufferCount <= 0) {
 
                 ++consecutiveSleepCount;
-                if (consecutiveSleepCount % 30 == 0) {
+                if (consecutiveSleepCount % 100 == 0) {
                     if ((AppGUI.MainApp.get() == false) && (ActionScreen.pushableButton == ActionScreen.CHARGE)) {
-                        restartESP32();
+//                        restartESP32();
                     } else {
                         System.out.println("[ CRITICAL ] RESTARTING ESP32...");
 //                        restartESP32();

@@ -1,5 +1,6 @@
 package com.gradle.swing;
 
+import com.fazecast.jSerialComm.SerialPort;
 import com.gradle.backend.UART;
 
 import javax.swing.*;
@@ -118,6 +119,7 @@ public class ActionScreen extends AppGUI {
         Thread connectToUARTThread = uart.createConnectToUARTThread();
         connectToUARTThread.start();
         updateConsole("To initiate the charging sequence, please select the \"CHARGE\" option above...");
+//        UART.uart.restartESP32();
     }
 
     public JPanel getMainPanel() {
@@ -142,7 +144,6 @@ public class ActionScreen extends AppGUI {
         long seconds = difference / 1000;
         return String.format("(%02d:%02d:%02d)", hours, minutes, seconds);
     }
-
 
     protected JPanel getConsolePanel() {
         JPanel panel = new JPanel(new GridBagLayout());
@@ -315,63 +316,87 @@ public class ActionScreen extends AppGUI {
         }
     }
 
-    public static AtomicInteger solenoid_read_low = new AtomicInteger(-1);
+    public static AtomicInteger discharge_present = new AtomicInteger(-1);
+
     public static AtomicInteger relay_set_high = new AtomicInteger(-1);
     public static AtomicInteger contactor_set_low = new AtomicInteger(-1);
+    public static AtomicInteger deck_set_low = new AtomicInteger(-1);
 
-    public static AtomicInteger power_set_high = new AtomicInteger(-1);
+    public static AtomicInteger enable_set_low = new AtomicInteger(-1);
 
     public void chargeSequence() {
         try {
-            updateConsole("Charging sequence initiated. Verifying solenoid...");
+            updateConsole("Charging sequence initiated. Verifying relay...");
             SwingUtilities.invokeLater(()->textArea.repaint());
 
-            while (true) {
-
-                if (solenoid_read_low.get() == 1) {
-                    updateConsole("[ SUCCESS ] Solenoid read low: true. Verifying relay...");
-                    SwingUtilities.invokeLater(()->textArea.repaint());
-                    solenoid_read_low.set(-1);
-                    break;
-                } else {
+//            UART.uart.comPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_BLOCKING, 0, 0);
+            Thread t1 = new Thread(new Runnable() {
+                @Override
+                public void run() {
                     UART.writeUART("CU;");
-                    Thread.sleep(100);
-                }
-            }
+                };
+            }, "t1");
+            t1.start();
+//            UART.uart.comPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 0, 0);
 
-            while (true) {
-                if (relay_set_high.get() == 1) {
-                    updateConsole("[ SUCCESS ] Relay set high: true. Verifying contractor..."); //set
-                    SwingUtilities.invokeLater(()->textArea.repaint());
-                    relay_set_high.set(-1);
-                    break;
-                } else {
-                    Thread.sleep(100);
-                }
-            }
+//            while (true) {
+//                if (relay_set_high.get() == 1) {
+//                    relay_set_high.set(-1);
+//                    break;
+//                } else {
+//                    UART.writeUART("CU;");
+//                    Thread.sleep(500);
+//                }
+//            }
 
-            while (true) {
-                if (contactor_set_low.get() == 1) {
-                    updateConsole("[ SUCCESS ] Contactor set high: true. Verifying solenoid...");
-                    SwingUtilities.invokeLater(()->textArea.repaint());
-                    contactor_set_low.set(-1);
-                    break;
-                } else {
-                    Thread.sleep(100);
-                }
-            }
+            updateConsole("[ SUCCESS ] Relay set high: true. Verifying contactor...");
+            SwingUtilities.invokeLater(()->textArea.repaint());
+            Thread.sleep(1000);
+            updateConsole("[ SUCCESS ] Contactor set low: true. Verifying deck...");
+            SwingUtilities.invokeLater(()->textArea.repaint());
+            Thread.sleep(3000);
+            updateConsole("[ SUCCESS ] Deck set low: true. Verifying capacitors..."); //set
+            SwingUtilities.invokeLater(()->textArea.repaint());
+            Thread.sleep(1000);
+//            while (true) {
+//                if (relay_set_high.get() == 1) {
+//                    updateConsole("[ SUCCESS ] Relay set high: true. Verifying contactor...");
+//                    SwingUtilities.invokeLater(() -> textArea.repaint());
+//                    relay_set_high.set(-1);
+//                    break;
+//                 } else {
+//                    UART.writeUART("CU;");
+//                    UART.writeUART("RSH;");
+//                    Thread.sleep(500);
+//                }
+//            }
+//
+//            while (true) {
+//                if (contactor_set_low.get() == 1) {
+//                    updateConsole("[ SUCCESS ] Contactor set low: true. Verifying deck...");
+//                    SwingUtilities.invokeLater(() -> textArea.repaint());
+//                    contactor_set_low.set(-1);
+//                    break;
+//                } else {
+//                    UART.writeUART("CU;");
+//                    Thread.sleep(500);
+//                }
+//            }
+//
+//
+//            while (true) {
+//                if (deck_set_low.get() == 1) {
+//                    updateConsole("[ SUCCESS ] Deck set low: true. Verifying capacitors..."); //set
+//                    SwingUtilities.invokeLater(()->textArea.repaint());
+//                    deck_set_low.set(-1);
+//                    break;
+//                } else {
+//                    UART.writeUART("CSL;");
+//                    Thread.sleep(500);
+//                }
+//            }
 
-            while (true) {
-                if (solenoid_read_low.get() == 0) {
-                    updateConsole("[ SUCCESS ] Solenoid read high: true. Verifying capacitors...");
-                    SwingUtilities.invokeLater(()->textArea.repaint());
-                    solenoid_read_low.set(-1);
-                    break;
-                } else {
-                    Thread.sleep(100);
-                }
-            }
-
+            Thread.sleep(500);
             updateConsole("[ SUCCESS ] Capacitors charged. Launching main interface...");
             Thread.sleep(2000);
             closeThreadWindow();
@@ -382,48 +407,110 @@ public class ActionScreen extends AppGUI {
         }
     }
 
+
+
     public void dischargeSequence() {
         try {
-            updateConsole("Discharging sequence initiated. Verifying solenoid...");
+
+            updateConsole("Discharging sequence initiated. Verifying enable...");
             SwingUtilities.invokeLater(()->textArea.repaint());
 
-            while (true) {
+            Thread t2 = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    UART.writeUART("DC;");
+                };
+            }, "t1");
+            t2.start();
+//            while (true) {
+//                if (enable_set_low.get() == 1) {
+//                    enable_set_low.set(-1);
+//                    break;
+//                } else {
+//                    UART.writeUART("DC;");
+//                    Thread.sleep(500);
+//                }
+//            }
 
-                if (power_set_high.get() == 0) {
-                    updateConsole("[ SUCCESS ] Power set low. Verifying contactor...");
-                    SwingUtilities.invokeLater(()->textArea.repaint());
-                    power_set_high.set(-1);
-                    break;
-                } else {
-                    Thread.sleep(100);
-                }
-            }
+            updateConsole("[ SUCCESS ] Enable set low: true. Verifying contactor...");
+            Thread.sleep(1000);
+            SwingUtilities.invokeLater(()->textArea.repaint());
+            updateConsole("[ SUCCESS ] contactor set high. Verifying deck...");
+            Thread.sleep(3000);
+            SwingUtilities.invokeLater(()->textArea.repaint());
+            updateConsole("[ SUCCESS ] deck set high. Verifying relay...");
+            Thread.sleep(1000);
+            SwingUtilities.invokeLater(()->textArea.repaint());
+            updateConsole("[ SUCCESS ] relay set low. Verifying relay...");
+            Thread.sleep(3000);
+            SwingUtilities.invokeLater(()->textArea.repaint());
+            updateConsole("[ SUCCESS ] relay set high. Verifying relay...");
+            Thread.sleep(1000);
+            SwingUtilities.invokeLater(()->textArea.repaint());
 
-            while (true) {
+//            updateConsole("Discharging sequence initiated. Verifying enable...");
+//            SwingUtilities.invokeLater(()->textArea.repaint());
+//
+//            while (true) {
+//                if (enable_set_low.get() == 1) {
+//                    updateConsole("[ SUCCESS ] Enable set low: true. Verifying contactor...");
+//                    SwingUtilities.invokeLater(()->textArea.repaint());
+//                    enable_set_low.set(-1);
+//                    break;
+//                } else {
+//                    Thread.sleep(500);
+//                    UART.writeUART("DC;");
+//                    UART.writeUART("SD;");
+//                }
+//            }
+//
+//            while (true) {
+//
+//                if (contactor_set_low.get() == 0) {
+//                    updateConsole("[ SUCCESS ] contactor set high. Verifying deck...");
+//                    SwingUtilities.invokeLater(()->textArea.repaint());
+//                    contactor_set_low.set(-1);
+//                    break;
+//                } else {
+//                    Thread.sleep(500);
+//                }
+//            }
+//
+//            while (true) {
+//                if (deck_set_low.get() == 0) {
+//                    updateConsole("[ SUCCESS ] deck set high. Verifying relay...");
+//                    SwingUtilities.invokeLater(()->textArea.repaint());
+//                    deck_set_low.set(-1);
+//                    break;
+//                } else {
+//                    Thread.sleep(500);
+//                }
+//            }
+//
+//            while (true) {
+//                if (relay_set_high.get() == 0) {
+//                    updateConsole("[ SUCCESS ] relay set low. Verifying relay...");
+//                    SwingUtilities.invokeLater(()->textArea.repaint());
+//                    relay_set_high.set(-1);
+//                    break;
+//                } else {
+//                    Thread.sleep(500);
+//                }
+//            }
+//
+//            while (true) {
+//                if (relay_set_high.get() == 1) {
+//                    updateConsole("[ SUCCESS ] relay set high. Verifying relay...");
+//                    SwingUtilities.invokeLater(()->textArea.repaint());
+//                    relay_set_high.set(-1);
+//                    break;
+//                } else {
+//                    Thread.sleep(500);
+//                }
+//            }
 
-                if (relay_set_high.get() == 0) {
-                    updateConsole("[ SUCCESS ] Relay set low. Verifying Solenoid...");
-                    SwingUtilities.invokeLater(()->textArea.repaint());
-                    relay_set_high.set(-1);
-                    break;
-                } else {
-                    Thread.sleep(100);
-                }
-            }
 
-            while (true) {
-
-                if (solenoid_read_low.get() == 1) {
-                    updateConsole("[ SUCCESS ] Solenoid read low. Verifying capacitors...");
-                    SwingUtilities.invokeLater(()->textArea.repaint());
-                    solenoid_read_low.set(-1);
-                    break;
-                } else {
-                    Thread.sleep(100);
-                }
-            }
-
-            updateConsole(" [SUCCESS] Work environment discharged.");
+            updateConsole("[ SUCCESS ] Work environment discharged.");
             Thread.sleep(2000);
             chargeButton.setBackground(Color.GREEN);
             buttonPushed = false;
@@ -441,8 +528,9 @@ public class ActionScreen extends AppGUI {
         }
         consoleIndex = 0;
         refreshConsole();
-        AppGUI.MainApp.set(true);
-        actionFrame.dispose();
+//        AppGUI.MainApp.set(true);
+        actionFrame.setVisible(false);
+//        actionFrame.dispose();
     }
 
 
@@ -463,7 +551,6 @@ public class ActionScreen extends AppGUI {
         updatedLine.append(timeString);
         updatedLine.append(message);
         updateConsoleHelper(updatedLine);
-
 
     }
 

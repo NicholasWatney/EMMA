@@ -2,6 +2,8 @@
 
 package com.gradle.swing;
 
+import com.gradle.backend.UART;
+
 import java.awt.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.*;
@@ -62,6 +64,10 @@ public abstract class AppGUI {
         abortScreen.buildGUI();
     }
 
+    public static void uartReconnect() {
+        UART.uart.comPort.closePort();
+    }
+
     protected static void launchActionScreen(String string) {
         if (actionScreenCreated == false) {
             ActionScreen.actionScreen = new ActionScreen();
@@ -77,11 +83,11 @@ public abstract class AppGUI {
                 ActionScreen.actionScreen.pushableButton = CHARGE;
             } else if (string.equals("DISCHARGE")) {
                 ActionScreen.actionScreen.pushableButton = DISCHARGE;
-                
+
             }
             ActionScreen.actionScreen.startMasterClock();
             ActionScreen.actionScreen.dischargeButton.setBackground(Color.GREEN);
-            ActionScreen.actionScreen.refreshConsole();
+//            ActionScreen.actionScreen.refreshConsole();
             ActionScreen.actionScreen.getFrame().setVisible(true);
             ActionScreen.actionScreen.buttonPushed = false;
             ActionScreen.actionScreen.updateConsole("To initiate the discharging sequence, please select the \"DISCHARGE\" option above...");

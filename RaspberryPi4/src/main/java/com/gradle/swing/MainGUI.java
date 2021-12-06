@@ -1140,8 +1140,32 @@ public class MainGUI extends AppGUI {
         resetButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+                Thread spamShutDownThread = new Thread(new Runnable() {
+
+                    @Override
+                    public void run() {
+//                        try {
+//                            while (true) {
+//                                UART.writeUART("SD;");
+//                                Thread.sleep(500);
+//
+//                                if (ActionScreen.discharge_present.get() == 1) {
+//                                    break;
+//                                }
+//                            }
+//                        } catch (InterruptedException ie) {
+//                            ie.printStackTrace();
+//                        }
+                    }
+                }, "Shutdown Thread");
+//                spamShutDownThread.start();
                 closeThreadWindow();
                 AppGUI.launchActionScreen("DISCHARGE");
+//                try {
+//                    spamShutDownThread.join();
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
 //                UART.uart.nullifyEverything();
 //                if (UART.uart.comPort != null) {
 //                    UART.resetCommand = true;
@@ -1163,7 +1187,9 @@ public class MainGUI extends AppGUI {
 
     public void closeThreadWindow() {
         AppGUI.MainApp.set(false);
-        mainFrame.dispose();
+        mainFrame.setVisible(false);
+//        actionFrame.setVisible(true);
+//        mainFrame.dispose();
     }
 
     private void directionHandler(String direction) {
