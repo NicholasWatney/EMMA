@@ -1,6 +1,8 @@
 package com.gradle.backend;
 
 import com.fazecast.jSerialComm.*;
+import com.gradle.swing.ActionScreen;
+import com.gradle.swing.AppGUI;
 import com.gradle.swing.MainGUI;
 import org.junit.runner.OrderWith;
 
@@ -44,10 +46,10 @@ public class UART {
             }
         }
 
-        initializeDataSet();
         if (comPort == null || !comPort.openPort()) {
             return false;
         }
+        initializeDataSet();
 
         comPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 0, 0);
         comPort.setBaudRate(57600);
@@ -55,24 +57,34 @@ public class UART {
     }
 
     private void updateConsole(StringBuilder message) {
-        MainGUI.mainGUI.updateConsole(message);
+        if (AppGUI.MainApp.get() == false) {
+            ActionScreen.actionScreen.updateConsole(message);
+        } else {
+            MainGUI.mainGUI.updateConsole(message);
+        }
     }
 
     private void updateConsole(String message) {
-        MainGUI.mainGUI.updateConsole(message);
+        if (AppGUI.MainApp.get() == false) {
+            ActionScreen.actionScreen.updateConsole(message);
+        } else {
+            MainGUI.mainGUI.updateConsole(message);
+        }
     }
 
     private void connectToUARTHelper() {
         boolean attemptToConnect = false;
         while (true) {
             if (connectToESP32()) {
-                updateConsole("Connected the " + uart.comPort);
-                updateConsole("Setting voltage source to: " + MainGUI.current_voltage + "V");
+                updateConsole("[ SUCCESS ] Connected the " + uart.comPort);
+                if (AppGUI.MainApp.get() == true) {
+                    updateConsole("Setting voltage source to: " + MainGUI.current_voltage + "V");
+                }
                 createReadUARTThread().start();
                 break;
             }
             if (!attemptToConnect) {
-                updateConsole("ESP32 Microcontroller is not connected to the RPi4. Waiting for a connection to be established...");
+                updateConsole("[ WARNING ] ESP32 not connected. Waiting on connection...");
                 attemptToConnect = true;
             }
 
@@ -112,6 +124,7 @@ public class UART {
     }
 
     public void updateReader(String parsed) {
+        System.out.println(parsed);
         String[] parsedList = parsed.split(":");
 
         if (parsedList.length != 2) {
@@ -123,6 +136,30 @@ public class UART {
         label = parsedList[0].strip();
         value = parsedList[1].strip();
         parsed = "";
+
+        if (label.equals("BL") && value.equals("0")) {
+            writeUART("BL;");
+            return;
+        } else if (label.equals("SRL") && value.equals("0")) {
+            ActionScreen.solenoid_read_low.set(1);
+            writeUART("SRL;");
+            return;
+        } else if (label.equals("RSH") && value.equals("0")) {
+            ActionScreen.relay_set_high.set(1);
+            writeUART("RSH;");
+            return;
+        } else if (label.equals("CSL") && value.equals("0")) {
+            ActionScreen.contactor_set_low.set(1);
+            writeUART("CSL;");
+            return;
+        } else if (label.equals("SRH") && value.equals("0")) {
+            ActionScreen.solenoid_read_low.set(0);
+            writeUART("SRH;");
+            return;
+        } else if (label.equals("PSL") && value.equals("0")) {
+            ActionScreen.power_set_high.set(0);
+            writeUART("PSL;");
+        } else if (label.equals("R")) {}
 
         Object sensor = dataMap.get(label);
         if (sensor != null) {
@@ -249,6 +286,7 @@ public class UART {
         int bufferCount = 0;
         int connectCount = 0;
         int parseableCount = 0;
+        UART.writeUART("RES;");
         while (true) {
 
             try {
@@ -258,7 +296,7 @@ public class UART {
                 ++connectCount;
                 if (connectCount == 1) {
                     nullifyEverything();
-                    updateConsole("Attempting to reconnect to: " + uart.comPort + "...");
+                    updateConsole("[ WARNING ] Waiting on " + uart.comPort + "...");
                 }
 
                 if (connectCount > 0) {
@@ -276,16 +314,19 @@ public class UART {
 
             if (connectCount > 0) {
                 connectCount = 0;
-                updateConsole("Connected to: " + uart.comPort + " successfully!");
+                updateConsole("[ SUCCESS ] Connected the " + uart.comPort + " successfully!");
             }
 
             if (bufferCount <= 0) {
 
                 ++consecutiveSleepCount;
-                if (consecutiveSleepCount == 20) {
-                    updateConsole("Attempting to restart ESP32...");
-                    restartESP32();
-                    continue;
+                if (consecutiveSleepCount % 30 == 0) {
+                    if ((AppGUI.MainApp.get() == false) && (ActionScreen.pushableButton == ActionScreen.CHARGE)) {
+                        restartESP32();
+                    } else {
+                        System.out.println("[ CRITICAL ] RESTARTING ESP32...");
+//                        restartESP32();
+                    }
                 }
 
                 try {
@@ -298,9 +339,9 @@ public class UART {
 
             while (bufferCount-- > 0) {
 
-                if (consecutiveSleepCount >= 20) {
-                    updateConsole("Restarted ESP32 successfully!");
-                }
+//                if (consecutiveSleepCount >= 20) {
+//                    updateConsole("Restarted ESP32 successfully!");
+//                }
 
                 if (consecutiveSleepCount > 0) {
                     consecutiveSleepCount = 0;
@@ -317,28 +358,28 @@ public class UART {
                 }
 
                 if (!isParseableLetterOrDigit(parse)) {
-                    ++parseableCount;
-
-                    if (parseableCount == 1) {
-                        if (resetCommand) {
-                            updateConsole("Restart requested. Restarting ESP32 microcontroller...");
-                            resetCommand = false;
-                        } else {
-                            updateConsole("Flushing the serial bus. Restarting the ESP32 microcontroller...");
-                        }
-                    }
-
-                    if (parseableCount > 0) {
-                        restartESP32();
-                    }
-
+//                    ++parseableCount;
+//
+//                    if (parseableCount == 1) {
+//                        if (resetCommand) {
+//                            updateConsole("Restart requested. Restarting ESP32 microcontroller...");
+//                            resetCommand = false;
+//                        } else {
+//                            updateConsole(" [ WARNING ] Flushing serial bus. Restarting ESP32");
+//                        }
+//                    }
+//
+//                    if (parseableCount > 0) {
+//                        restartESP32();
+//                    }
+//
                     continue;
                 }
 
-                if (parseableCount > 0) {
-                    parseableCount = 0;
-                    updateConsole("Restarted the ESP32 microcontroller successfully!");
-                }
+//                if (parseableCount > 0) {
+//                    parseableCount = 0;
+//                    updateConsole("Restarted the ESP32 microcontroller successfully!");
+//                }
 
                 if (parse == ';') {
                     updateReader(parsed.toString());

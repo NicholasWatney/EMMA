@@ -3,6 +3,7 @@
 package com.gradle.swing;
 
 import java.awt.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.StrokeBorder;
@@ -42,6 +43,8 @@ public abstract class AppGUI {
     final static int CHARGE = 0;
     final static int DISCHARGE = 1;
 
+    public static AtomicBoolean MainApp = new AtomicBoolean(false);
+
     protected JFrame abortFrame;
     protected JFrame mainFrame;
     protected JFrame actionFrame;
@@ -74,6 +77,7 @@ public abstract class AppGUI {
                 ActionScreen.actionScreen.pushableButton = CHARGE;
             } else if (string.equals("DISCHARGE")) {
                 ActionScreen.actionScreen.pushableButton = DISCHARGE;
+                
             }
             ActionScreen.actionScreen.startMasterClock();
             ActionScreen.actionScreen.dischargeButton.setBackground(Color.GREEN);

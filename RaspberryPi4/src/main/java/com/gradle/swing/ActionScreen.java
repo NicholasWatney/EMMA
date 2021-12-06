@@ -1,5 +1,7 @@
 package com.gradle.swing;
 
+import com.gradle.backend.UART;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.StrokeBorder;
@@ -8,6 +10,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ActionScreen extends AppGUI {
 
@@ -20,14 +24,14 @@ public class ActionScreen extends AppGUI {
 
     public static int consoleIndex = 0;
 
-    final static int CHARGE = 0;
-    final static int DISCHARGE = 1;
+    public final static int CHARGE = 0;
+    public final static int DISCHARGE = 1;
 
     public JFrame getFrame() {
         return actionFrame;
     }
 
-    public int pushableButton = CHARGE;
+    public static int pushableButton = CHARGE;
     public boolean buttonPushed = false;
 
     private static long oldTime;
@@ -110,6 +114,9 @@ public class ActionScreen extends AppGUI {
         actionFrame.setVisible(true);
         Thread updateGUIThread = createUpdateGUIThread();
         updateGUIThread.start();
+        UART uart = new UART();
+        Thread connectToUARTThread = uart.createConnectToUARTThread();
+        connectToUARTThread.start();
         updateConsole("To initiate the charging sequence, please select the \"CHARGE\" option above...");
     }
 
@@ -219,7 +226,7 @@ public class ActionScreen extends AppGUI {
                     } else {
                         if (disabledButton.toString().equals("")) {
                             disabledButton.setLength(0);
-                            disabledButton.append(" WARNING: Invalid user input. The system is completly charged. Please select the \"Discharge\" button.");
+                            disabledButton.append(" WARNING: Invalid user input. The system is completely charged. Please select the \"Discharge\" button.");
                             updateConsole(disabledButton);
                         }
                     }
@@ -308,39 +315,68 @@ public class ActionScreen extends AppGUI {
         }
     }
 
+    public static AtomicInteger solenoid_read_low = new AtomicInteger(-1);
+    public static AtomicInteger relay_set_high = new AtomicInteger(-1);
+    public static AtomicInteger contactor_set_low = new AtomicInteger(-1);
+
+    public static AtomicInteger power_set_high = new AtomicInteger(-1);
+
     public void chargeSequence() {
         try {
-            updateConsole("Charging sequence initiated. Verifying the state of the solenoid...");
+            updateConsole("Charging sequence initiated. Verifying solenoid...");
             SwingUtilities.invokeLater(()->textArea.repaint());
 
-//            wait(1000);
-            Thread.sleep(1000);
-            updateConsole(" [SUCCESS] Verified that solenoid is OFF. Digital PIN read: low. Verifying the state of the discharge relay...");
-            SwingUtilities.invokeLater(()->textArea.repaint());
-//            wait(1000);
-            Thread.sleep(1000);
-            updateConsole(" [SUCCESS] Verified that discharge relay is OFF. Digital PIN read: low. Closing 3-phase contractor...");
-            SwingUtilities.invokeLater(()->textArea.repaint());
-//            wait(500);
-            Thread.sleep(500);
-            updateConsole(" [SUCCESS] Closed 3-phase contractor. Digital PIN set: high. Verifying incoming current...");
-            SwingUtilities.invokeLater(()->textArea.repaint());
-//            wait(500);
-            Thread.sleep(500);
-            updateConsole(" [SUCCESS] Verified current is at least 2mA. Digital READING read: high. Verifying solenoid...");
-            SwingUtilities.invokeLater(()->textArea.repaint());
-//            wait(5000);
-            Thread.sleep(5000);
-            updateConsole(" [SUCCESS] Verified the solenoid is ON. Verified the relay circuit is CLOSED. Digital PIN set: high.");
-            SwingUtilities.invokeLater(()->textArea.repaint());
-//            wait(2000);
-            Thread.sleep(2000);
-            updateConsole(" [SUCCESS] Setup work environment! Launching main interface...");
-            SwingUtilities.invokeLater(()->textArea.repaint());
-//            wait(2000);
+            while (true) {
+
+                if (solenoid_read_low.get() == 1) {
+                    updateConsole("[ SUCCESS ] Solenoid read low: true. Verifying relay...");
+                    SwingUtilities.invokeLater(()->textArea.repaint());
+                    solenoid_read_low.set(-1);
+                    break;
+                } else {
+                    UART.writeUART("CU;");
+                    Thread.sleep(100);
+                }
+            }
+
+            while (true) {
+                if (relay_set_high.get() == 1) {
+                    updateConsole("[ SUCCESS ] Relay set high: true. Verifying contractor..."); //set
+                    SwingUtilities.invokeLater(()->textArea.repaint());
+                    relay_set_high.set(-1);
+                    break;
+                } else {
+                    Thread.sleep(100);
+                }
+            }
+
+            while (true) {
+                if (contactor_set_low.get() == 1) {
+                    updateConsole("[ SUCCESS ] Contactor set high: true. Verifying solenoid...");
+                    SwingUtilities.invokeLater(()->textArea.repaint());
+                    contactor_set_low.set(-1);
+                    break;
+                } else {
+                    Thread.sleep(100);
+                }
+            }
+
+            while (true) {
+                if (solenoid_read_low.get() == 0) {
+                    updateConsole("[ SUCCESS ] Solenoid read high: true. Verifying capacitors...");
+                    SwingUtilities.invokeLater(()->textArea.repaint());
+                    solenoid_read_low.set(-1);
+                    break;
+                } else {
+                    Thread.sleep(100);
+                }
+            }
+
+            updateConsole("[ SUCCESS ] Capacitors charged. Launching main interface...");
             Thread.sleep(2000);
             closeThreadWindow();
             MainGUI.launchMainGUI();
+
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -350,22 +386,45 @@ public class ActionScreen extends AppGUI {
         try {
             updateConsole("Discharging sequence initiated. Verifying solenoid...");
             SwingUtilities.invokeLater(()->textArea.repaint());
-            Thread.sleep(1000);
 
-            updateConsole(" [SUCCESS] Verified Power Deck EN line off. Digital PIN read: low. Opening 3-phase contractor...");
-            SwingUtilities.invokeLater(()->textArea.repaint());
-            Thread.sleep(2000);
+            while (true) {
 
-            updateConsole(" [SUCCESS] Verified 3-phase contractors is open. Digital PIN read: low. Opening Solenoid...");
-            SwingUtilities.invokeLater(()->textArea.repaint());
-            Thread.sleep(2000);
+                if (power_set_high.get() == 0) {
+                    updateConsole("[ SUCCESS ] Power set low. Verifying contactor...");
+                    SwingUtilities.invokeLater(()->textArea.repaint());
+                    power_set_high.set(-1);
+                    break;
+                } else {
+                    Thread.sleep(100);
+                }
+            }
 
-            updateConsole(" [SUCCESS] Verified Solenoid is open. Digital PIN set: high. Setting discharge relay on...");
-            SwingUtilities.invokeLater(()->textArea.repaint());
+            while (true) {
 
-            Thread.sleep(500);
+                if (relay_set_high.get() == 0) {
+                    updateConsole("[ SUCCESS ] Relay set low. Verifying Solenoid...");
+                    SwingUtilities.invokeLater(()->textArea.repaint());
+                    relay_set_high.set(-1);
+                    break;
+                } else {
+                    Thread.sleep(100);
+                }
+            }
+
+            while (true) {
+
+                if (solenoid_read_low.get() == 1) {
+                    updateConsole("[ SUCCESS ] Solenoid read low. Verifying capacitors...");
+                    SwingUtilities.invokeLater(()->textArea.repaint());
+                    solenoid_read_low.set(-1);
+                    break;
+                } else {
+                    Thread.sleep(100);
+                }
+            }
+
             updateConsole(" [SUCCESS] Work environment discharged.");
-            Thread.sleep(500);
+            Thread.sleep(2000);
             chargeButton.setBackground(Color.GREEN);
             buttonPushed = false;
             pushableButton = CHARGE;
@@ -382,6 +441,7 @@ public class ActionScreen extends AppGUI {
         }
         consoleIndex = 0;
         refreshConsole();
+        AppGUI.MainApp.set(true);
         actionFrame.dispose();
     }
 

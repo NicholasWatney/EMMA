@@ -1,7 +1,17 @@
+  
 
 
-
-
+#define ONBOARD_LED 2
+boolean ledState = false;
+void LEDSwitch() {
+  if (ledState == false) {
+    ledState = true;
+    digitalWrite(ONBOARD_LED,HIGH);
+  } else {
+    ledState = false;
+    digitalWrite(ONBOARD_LED,LOW);
+  }
+}
 
 #include <string>
 #include <sstream>
@@ -117,60 +127,86 @@ std::string inline toString(const T &value)
     return os.str();
 }
 
+boolean equals(std::string first, std::string second)
+{
+  if (first.length() != second.length())
+  {
+    return false;
+  }
+  else
+  {
+    for (int i = 0; i < first.length(); i++) 
+    {
+      if (first[i] != second[i]) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+int startedUp = 0;
+int buAnswer = 0;
+
+int cuAnswer = 0;
+int srlAnswer = 0;
+int rshAnswer = 0;
+int cslAnswer = 0;
+int srhAnswer = 0;
+
+
+int dcAnswer = 0;
+int pslAnswer = 0;
+int rslAnswer = 0;
+//int srlAnswer = 0;
+
 void inline process(std::string parsed)
 {
-  std::string label = parsed.substr(0, parsed.find(":"));
-  if (label == "L1")
-  {
-    led1 = !led1;
-    if (led1 == true)
-    {
-      digitalWrite(LED1, HIGH);
-    }
-    else
-    {
-      digitalWrite(LED1, LOW);
+  std::string label = parsed.substr(0, parsed.find(";"));
+
+  if (equals(label, "RES")) {
+    if (startedUp > 0) {
+      LEDSwitch();
+      delay(100);
+      ESP.restart();
+    } else {
+      startedUp = 1;
     }
   }
-
-  if (label == "L2")
-  {
-    led2 = !led2;
-    if (led2 == true)
-    {
-      digitalWrite(LED2, HIGH);
-    }
-    else
-    {
-      digitalWrite(LED2, LOW);
-    }
+  else if (equals(label, "BL")) {
+    buAnswer = 1;
   }
-
-  if (label == "L3")
-  {
-    led3 = !led3;
-    if (led3 == true)
-    {
-      digitalWrite(LED3, HIGH);
-    }
-    else
-    {
-      digitalWrite(LED3, LOW);
-    }
-  }
-
   
-  if (label == "L4")
-  {
-    led4 = !led4;
-    if (led4 == true)
-    {
-      digitalWrite(LED4, HIGH);
-    }
-    else
-    {
-      digitalWrite(LED4, LOW);
-    }
+  else if (equals(label, "CU")) {
+    cuAnswer = 1;
+  }
+
+  else if (equals(label, "SRL")) {
+    srlAnswer = 1;
+  }
+
+  else if (equals(label, "RSH")) {
+    rshAnswer = 1;
+  }
+
+  else if (equals(label, "CSL")) {
+    cslAnswer = 1;
+  }
+
+  else if (equals(label, "SRH")) {
+    srhAnswer = 1;
+  }
+
+  else if (equals(label, "DC")) {
+    dcAnswer = 1;
+  }
+
+  else if (equals(label, "PSL")) {
+    pslAnswer = 1;
+  }
+
+  else if (equals(label, "RSL")) {
+    rslAnswer = 1;
   }
 }
 
@@ -315,38 +351,165 @@ void inline updateDS3502()
 
 void setup()
 {
+  pinMode(ONBOARD_LED,OUTPUT);
   Serial.begin(57600);
-//  setupLEDs();
-//  setupSensors();
   setupQuickSensors();
-  setupDS3502();
+//  setupDS3502();
 }
 
-int bootAnswer = 0;
+
 void inline bootListen() {
   while (true) {
-    addMessage("BL:1");
+    addMessage("BL:0");
     messageFlush();
+    delay(1000);
     updateRead();
-    if (bootAnswer == 1) {
-      bootAnswer = 0;
+    if (buAnswer == 1) {
+      buAnswer = 0;
+      break;
+    }
+    else if (cuAnswer == 1) {
+      cuAnswer = 0;
       break;
     }
   }
 }
 
-void loop()
-{
-  //Listen for charging protocol
-  
 
-  // Execute main code
+void inline chargeUp() {
   while (true) {
-  timeClock();
+    addMessage("CU:0");
+    messageFlush();
+    delay(1000);
+    updateRead();
+    if (cuAnswer == 1) {
+      cuAnswer = 0;
+      break;
+    }
+  }
+
+  //SRL
+  while (true) {
+    addMessage("SRL:0");
+    messageFlush();
+    delay(1000);
+    updateRead();
+    if (srlAnswer == 1) {
+      srlAnswer = 0;
+      break;
+    }
+  }
+  
+  //RSL
+  while (true) {
+    addMessage("RSH:0");
+    messageFlush();
+    delay(1000);
+    updateRead();
+    if (rshAnswer == 1) {
+      rshAnswer = 0;
+      break;
+    }
+  }
+  
+  //CSC
+  while (true) {
+    addMessage("CSL:0");
+    messageFlush();
+    delay(1000);
+    updateRead();
+    if (cslAnswer == 1) {
+      cslAnswer = 0;
+      break;
+    }
+  }
+  
+  //SRH
+  while (true) {
+    addMessage("SRH:0");
+    messageFlush();
+    delay(1000);
+    updateRead();
+    if (srhAnswer == 1) {
+      srhAnswer = 0;
+      break;
+    }
+  }
+  
+  return;
+}
+
+void inline discharge() {
+  while (true) {
+    addMessage("DC:0");
+    messageFlush();
+    delay(1000);
+    updateRead();
+    if (dcAnswer == 1) {
+      dcAnswer = 0;
+      break;
+    }
+  }
+
+  while (true) {
+    addMessage("PSL:0");
+    messageFlush();
+    delay(1000);
+    updateRead();
+    if (pslAnswer == 1) {
+      pslAnswer = 0;
+      break;
+    }
+  }
+  
+  while (true) {
+    addMessage("RSL:0");
+    messageFlush();
+    delay(1000);
+    updateRead();
+    if (rslAnswer == 1) {
+      rslAnswer = 0;
+      break;
+    }
+  }
+
+  while (true) {
+    addMessage("SRL:0");
+    messageFlush();
+    delay(1000);
+    updateRead();
+    if (srlAnswer == 1) {
+      srlAnswer = 0;
+      break;
+    }
+  }
+  return;
+}
+
+void inline mainApp() {
+  while (true) {
+    timeClock();
     updateDS18B20();
     updateDS3502();
     messageFlush();
     updateRead();
+  }
+}
 
+void loop()
+{
+  // ESP32 listening for RPi4...
+  bootListen();
+
+  while (true) {
+
+    // Ready for charging up...
+    chargeUp();
+  
+    // exeucting main application...
+    mainApp();
+
+    // safely discharging...
+    discharge();
   }
 }
