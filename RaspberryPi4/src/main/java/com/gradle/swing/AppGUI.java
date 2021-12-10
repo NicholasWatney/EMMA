@@ -65,7 +65,8 @@ public abstract class AppGUI {
     }
 
     public static void uartReconnect() {
-        UART.uart.comPort.closePort();
+//        UART.uart.comPort.closePort();
+//        while (UART.uart.comPort.openPort());
     }
 
     protected static void launchActionScreen(String string) {

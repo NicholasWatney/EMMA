@@ -21,7 +21,7 @@ public class Light {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 state = !state;
-                UART.writeUART("L" + lightNumber + ":" + state + ";");
+//                UART.writeUART("L" + lightNumber + ":" + state + ";");
             }
         });
         lightList.add(this);
