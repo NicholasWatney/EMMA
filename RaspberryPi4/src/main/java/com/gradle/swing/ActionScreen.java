@@ -1,6 +1,7 @@
 package com.gradle.swing;
 
 import com.fazecast.jSerialComm.SerialPort;
+import com.gradle.backend.Pi;
 import com.gradle.backend.UART;
 
 import javax.swing.*;
@@ -67,10 +68,10 @@ public class ActionScreen extends AppGUI {
         while (true) {
             updateMasterClock();
             difference();
-            updateClock();
+            updateClock(); // POTENTIALLY INSERT ANALOG READ
 //            parseCritical();
             try {
-                Thread.sleep(50);
+                Thread.sleep(200);
             } catch (InterruptedException ie) {
                 ie.printStackTrace();
             }
@@ -116,10 +117,22 @@ public class ActionScreen extends AppGUI {
         Thread updateGUIThread = createUpdateGUIThread();
         updateGUIThread.start();
         UART uart = new UART();
+
+//        Thread thread = Pi.createPiTestThread();
+//        thread.start();
+
         Thread connectToUARTThread = uart.createConnectToUARTThread();
         connectToUARTThread.start();
         updateConsole("To initiate the charging sequence, please select the \"CHARGE\" option above...");
-//        UART.uart.restartESP32();
+
+//        if (uart.comPort == null) {} else {UART.uart.restartESP32();}
+
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+//        if (uart.comPort == null) {} else { UART.uart.restartESP32(); }
     }
 
     public JPanel getMainPanel() {
@@ -217,12 +230,13 @@ public class ActionScreen extends AppGUI {
                     if (pushableButton == CHARGE) {
                         chargeButton.setBackground(Color.GRAY);
                         buttonPushed = true;
+                        Pi.drive(1);
                         Thread chargeSequenceThread = new Thread(new Runnable() {
                             @Override
                             public void run() {
                                 chargeSequence();
                             }
-                        }, "chargeSequenceThread");
+                        }, "chargeSequenceThread"); // IMPLEMENT ATOMICBOOLEAN
                         chargeSequenceThread.start();
                     } else {
                         if (disabledButton.toString().equals("")) {
@@ -270,13 +284,14 @@ public class ActionScreen extends AppGUI {
                     if (pushableButton == DISCHARGE) {
                         buttonPushed = true;
                         dischargeButton.setBackground(Color.GRAY);
-                        Thread chargeSequenceThread = new Thread(new Runnable() {
+                        Pi.drive(1);
+                        Thread dischargeSequenceThread = new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                dischargeSequence();
+                                dischargeSequence(); // IMPLEMENT ATOMIC BOOLEAN
                             }
-                        }, "chargeSequenceThread");
-                        chargeSequenceThread.start();
+                        }, "dischargeSequenceThread");
+                        dischargeSequenceThread.start();
                     } else {
                         if (disabledButton.toString().equals("")) {
                             disabledButton.setLength(0);
@@ -330,13 +345,27 @@ public class ActionScreen extends AppGUI {
             SwingUtilities.invokeLater(()->textArea.repaint());
 
 //            UART.uart.comPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_BLOCKING, 0, 0);
-            Thread t1 = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    UART.writeUART("CU;");
-                };
-            }, "t1");
-            t1.start();
+//            Thread t1 = new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    AppGUI.uartReconnect();
+//                    try {
+//                        Thread.sleep(100);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//            UART.writeUART("CU;");
+//            Thread.sleep(100);
+//            UART.writeUART("CU;");
+//            Thread.sleep(100);
+//            UART.writeUART("CU;");
+//            Thread.sleep(100);
+//            UART.writeUART("CU;");
+//            Thread.sleep(100);
+//            UART.writeUART("CU;");
+//                };
+//            }, "t1");
+//            t1.start();
 //            UART.uart.comPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 0, 0);
 
 //            while (true) {
@@ -351,13 +380,13 @@ public class ActionScreen extends AppGUI {
 
             updateConsole("[ SUCCESS ] Relay set high: true. Verifying contactor...");
             SwingUtilities.invokeLater(()->textArea.repaint());
-            Thread.sleep(1000);
+            Thread.sleep(5000);
             updateConsole("[ SUCCESS ] Contactor set low: true. Verifying deck...");
             SwingUtilities.invokeLater(()->textArea.repaint());
-            Thread.sleep(3000);
+            Thread.sleep(5000);
             updateConsole("[ SUCCESS ] Deck set low: true. Verifying capacitors..."); //set
             SwingUtilities.invokeLater(()->textArea.repaint());
-            Thread.sleep(1000);
+            Thread.sleep(5000);
 //            while (true) {
 //                if (relay_set_high.get() == 1) {
 //                    updateConsole("[ SUCCESS ] Relay set high: true. Verifying contactor...");
@@ -398,7 +427,7 @@ public class ActionScreen extends AppGUI {
 
             Thread.sleep(500);
             updateConsole("[ SUCCESS ] Capacitors charged. Launching main interface...");
-            Thread.sleep(2000);
+            Thread.sleep(500);
             closeThreadWindow();
             MainGUI.launchMainGUI();
 
@@ -415,13 +444,16 @@ public class ActionScreen extends AppGUI {
             updateConsole("Discharging sequence initiated. Verifying enable...");
             SwingUtilities.invokeLater(()->textArea.repaint());
 
-            Thread t2 = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    UART.writeUART("DC;");
-                };
-            }, "t1");
-            t2.start();
+//            UART.writeUART("DC;");
+//            Thread.sleep(100);
+//            UART.writeUART("DC;");
+//            Thread.sleep(100);
+//            UART.writeUART("DC;");
+//            Thread.sleep(100);
+//            UART.writeUART("DC;");
+//            Thread.sleep(100);
+//            UART.writeUART("DC;");
+//            Thread.sleep(100);
 //            while (true) {
 //                if (enable_set_low.get() == 1) {
 //                    enable_set_low.set(-1);
@@ -433,19 +465,19 @@ public class ActionScreen extends AppGUI {
 //            }
 
             updateConsole("[ SUCCESS ] Enable set low: true. Verifying contactor...");
-            Thread.sleep(1000);
+            Thread.sleep(5000);
             SwingUtilities.invokeLater(()->textArea.repaint());
-            updateConsole("[ SUCCESS ] contactor set high. Verifying deck...");
-            Thread.sleep(3000);
+            updateConsole("[ SUCCESS ] contactor set high: true. Verifying deck...");
+            Thread.sleep(5000);
             SwingUtilities.invokeLater(()->textArea.repaint());
-            updateConsole("[ SUCCESS ] deck set high. Verifying relay...");
-            Thread.sleep(1000);
+            updateConsole("[ SUCCESS ] deck set high: true. Verifying relay...");
+            Thread.sleep(5000);
             SwingUtilities.invokeLater(()->textArea.repaint());
-            updateConsole("[ SUCCESS ] relay set low. Verifying relay...");
-            Thread.sleep(3000);
+            updateConsole("[ SUCCESS ] relay set low: true. Verifying relay...");
+            Thread.sleep(5000);
             SwingUtilities.invokeLater(()->textArea.repaint());
-            updateConsole("[ SUCCESS ] relay set high. Verifying relay...");
-            Thread.sleep(1000);
+            updateConsole("[ SUCCESS ] relay set high: true. Verifying relay...");
+            Thread.sleep(5000);
             SwingUtilities.invokeLater(()->textArea.repaint());
 
 //            updateConsole("Discharging sequence initiated. Verifying enable...");
@@ -511,7 +543,8 @@ public class ActionScreen extends AppGUI {
 
 
             updateConsole("[ SUCCESS ] Work environment discharged.");
-            Thread.sleep(2000);
+//            UART.uart.restartESP32();
+            Thread.sleep(1000);
             chargeButton.setBackground(Color.GREEN);
             buttonPushed = false;
             pushableButton = CHARGE;

@@ -4,6 +4,8 @@
 #define POWER_DECK_SOLENOID 18
 #define POWER_DECK_ENABLE 23
 
+#define TEST 1
+
 #define ONBOARD_LED 2
 boolean ledState = false;
 void LEDSwitch() {
@@ -36,6 +38,16 @@ Adafruit_DS3502 ds3502 = Adafruit_DS3502();
 #define DS2 33
 #define DS3 25
 #define DS4 26
+
+#define ACK 14
+#define B1 39
+#define B2 34
+#define B3 35
+
+
+
+
+
 
 //#define WIPER_VALUE_PIN 36
 
@@ -163,6 +175,7 @@ int rslAnswer = 0;
 int dshAnswer = 0; 
 int cshAnswer = 0; 
 int eslAnswer = 0;
+int eshAnswer = 0;
 
 void inline process(std::string parsed)
 {
@@ -214,6 +227,9 @@ void inline process(std::string parsed)
   }
   else if (equals(label, "ESL")) {
     eslAnswer = 1;
+  } 
+  else if (equals(label, "ESH")) {
+    eshAnswer = 1;
   }
   
 }
@@ -236,7 +252,7 @@ void inline updateLM35()
 }
 
 
-#define TEMP_DELAY 250 // >= 750
+#define TEMP_DELAY 2000 // >= 750
 unsigned long tempClock = 0;
 void inline updateDS18B20()
 {
@@ -365,7 +381,49 @@ void setupPins()
   digitalWrite(SAFETY_DISCHARGE_RELAY, HIGH);
   digitalWrite(TP_CONTACTOR, HIGH);
   digitalWrite(POWER_DECK_SOLENOID, HIGH);
-  digitalWrite(POWER_DECK_ENABLE, HIGH);
+  digitalWrite(POWER_DECK_ENABLE, LOW);
+}
+
+boolean volatile ack = false;
+boolean volatile bit1 = false;
+boolean volatile bit2 = false;
+boolean volatile bit3 = false;
+
+void IRAM_ATTR B1Triggered() {
+  bit1 = true;
+  Serial.println("B1");
+//  addMessage("B1");
+//  messageFlush();
+  
+}
+void IRAM_ATTR B2Triggered() {
+  bit2 = true;
+  Serial.println("B2");
+//  addMessage("B2");
+//  messageFlush();
+}
+  
+void IRAM_ATTR B3Triggered() {
+  bit3 = true;
+  Serial.println("B3");
+//  addMessage("B3");
+//  messageFlush();
+}
+
+
+void setupInterrupts()
+{
+  pinMode(ACK, OUTPUT);
+  pinMode(B1, INPUT);
+  pinMode(B2, INPUT);
+  pinMode(B3, INPUT);
+//  pinMode(B1, INPUT);
+//  pinMode(B2, INPUT);
+//  pinMode(B3, INPUT);
+  
+  attachInterrupt(B1, B1Triggered, RISING); 
+  attachInterrupt(B2, B2Triggered, RISING); 
+  attachInterrupt(B3, B3Triggered, RISING);  
 }
 
 void setup()
@@ -373,7 +431,9 @@ void setup()
   Serial.begin(57600);
   setupPins();
   setupQuickSensors();
+  setupInterrupts();
 //  setupDS3502();
+
 }
 
 
@@ -405,21 +465,39 @@ void inline kill100(int t) {
 
 void inline chargeUp() {
 
-  while (true) {
-    addMessage("CU:0");
-    messageFlush();
-    delay(500);
-    updateRead();
-    if (cuAnswer == 1) {
-      cuAnswer = 0;
-      break;
-    }
-  }
+  addMessage("\n\n\n---CHARGE---");
+  messageFlush();
   
-  addMessage("RSH:0");
-  kill100(100);
-  
+  addMessage("SAFETY_DISCHARGE_RELAY: HIGH");
+  messageFlush();
   digitalWrite(SAFETY_DISCHARGE_RELAY, HIGH);
+  delay(5000);
+
+  addMessage("THREEPHASE_CONTACTOR: LOW");
+  messageFlush();
+  digitalWrite(TP_CONTACTOR, LOW);
+  delay(5000);
+
+  addMessage("POWER_DECK_SOLENOID: LOW");
+  messageFlush();
+  digitalWrite(POWER_DECK_SOLENOID, LOW);
+  delay(5000);
+  delay(1000);
+  return;
+}
+
+//  while (true) {
+//    addMessage("CU:0");
+//    messageFlush();
+//    delay(500);
+//    updateRead();
+//    if (cuAnswer == 1) {
+//      cuAnswer = 0;
+//      break;
+//    }
+//  }
+  
+
 
 //  while (true) {
 //    addMessage("RSH:0");
@@ -432,9 +510,9 @@ void inline chargeUp() {
 //    }
 //  }
 
-  kill100(1000);
+
 //  delay(1000);
-  digitalWrite(TP_CONTACTOR, LOW);
+
   
 //  while (true) {
 //    addMessage("CSL:0");
@@ -447,9 +525,8 @@ void inline chargeUp() {
 //    }
 //  }
 
-  kill100(3000);
-//  delay(3000);
-  digitalWrite(POWER_DECK_SOLENOID, LOW);
+
+
   
 //  while (true) {
 //    addMessage("DSL:0");
@@ -462,8 +539,8 @@ void inline chargeUp() {
 //    }
 //  }
 
-  return;
-}
+//  return;
+//}
 
 void inline discharge() {
 //  while (true) {
@@ -477,12 +554,39 @@ void inline discharge() {
 //    }
 //  }
 
-  addMessage("ESL:0");
+//  addMessage("ESL:0");
+  addMessage("\n---DISCHARGE---");
   messageFlush();
-  kill100(100);
-
+  
+  addMessage("POWER_DECK_ENABLE: :LOW");
+  messageFlush();
   digitalWrite(POWER_DECK_ENABLE, LOW);
+  delay(5000);
 
+  addMessage("THREE_PHASE_CONTACTOR: HIGH");
+  messageFlush();
+  digitalWrite(TP_CONTACTOR, HIGH);
+  delay(5000);
+
+  addMessage("POWER_DECK_SOLENOID: HIGH");
+  messageFlush();
+  digitalWrite(POWER_DECK_SOLENOID, HIGH);
+  delay(5000);
+
+  addMessage("SAFETY_DISCHARFGE_RELAY: LOW");
+  messageFlush();
+  digitalWrite(SAFETY_DISCHARGE_RELAY, LOW);
+  delay(5000);
+
+  addMessage("SAFETY_DISCHARGE_RELAY: HIGH");
+  messageFlush();
+  digitalWrite(SAFETY_DISCHARGE_RELAY, HIGH);
+  delay(5000);
+  delay(1000);
+
+  return;
+}
+  
 //  while (true) {
 //    addMessage("ESL:0");
 //    messageFlush();
@@ -493,8 +597,7 @@ void inline discharge() {
 //      break;
 //    }
 //  }
-  kill100(100);
-  digitalWrite(TP_CONTACTOR, HIGH);
+
   
 //  while (true) {
 //    addMessage("CSH:0");
@@ -506,9 +609,9 @@ void inline discharge() {
 //      break;
 //    }
 //  }
-  kill100(3000);
+//  kill100(5000);
 //  delay(3000);
-  digitalWrite(POWER_DECK_SOLENOID, HIGH);
+//  digitalWrite(POWER_DECK_SOLENOID, HIGH);
 
 //  while (true) {
 //    addMessage("DSH:0");
@@ -520,9 +623,9 @@ void inline discharge() {
 //      break;
 //    }
 //  }
-  kill100(1000);
+//  kill100(5000);
 //  delay(1000);
-  digitalWrite(SAFETY_DISCHARGE_RELAY, LOW);
+//  digitalWrite(SAFETY_DISCHARGE_RELAY, LOW);
 
 //  while (true) {
 //    addMessage("RSL:0");
@@ -534,7 +637,7 @@ void inline discharge() {
 //      break;
 //    }
 //  }
-  kill100(100);
+//  kill100(5000);
 //  delay(3000);
   
 //  while (true) {
@@ -548,17 +651,42 @@ void inline discharge() {
 //    }
 //  }
 
-  digitalWrite(SAFETY_DISCHARGE_RELAY, HIGH);  
-  return;
+//  digitalWrite(SAFETY_DISCHARGE_RELAY, HIGH);  
+//  return;
+//}
+
+void inline updatePower() {
+  if (eslAnswer == 1) {
+    eslAnswer = 0;
+    digitalWrite(POWER_DECK_ENABLE, LOW);
+    Serial.write("ESL:0");
+  } else if (eshAnswer == 1) {
+    eshAnswer = 0;
+    digitalWrite(POWER_DECK_ENABLE, HIGH);
+    Serial.write("ESH:0");
+  }
 }
 
 void inline mainApp() {
+
+  addMessage("\n---MAIN----");
+  messageFlush();
+  
+  addMessage("RUNNING FOR 20 SECONDS");
+  messageFlush();
+  addMessage("POWER_DECK_ENABLE: HIGH");
+  messageFlush();
+  digitalWrite(POWER_DECK_ENABLE, LOW);
+  delay(20000);
+  return;
+  
   while (true) {
     timeClock();
     updateDS18B20();
 //    updateDS3502();
     messageFlush();
     updateRead();
+    updatePower();
     if (dcAnswer == 1) {
       dcAnswer = 0;
       return;
@@ -568,18 +696,21 @@ void inline mainApp() {
 
 void loop()
 {
-  // ESP32 listening for RPi4...
-  bootListen();
-
   while (true) {
-
-    // Ready for charging up...
-    chargeUp();
-  
-    // exeucting main application...
-    mainApp();
-
-    // safely discharging...
-    discharge();
+    Serial.write("SETTING HIGH\n");
+    digitalWrite(ACK, HIGH);
+    delay(1000);
+    Serial.write("SETTING LOW\n");
+    digitalWrite(ACK, LOW);
+    delay(1000);
   }
+  
+  delay(5000);
+  chargeUp();
+  mainApp();
+  discharge();
+
+  addMessage("\n---STALLING FOR 5 SECONDS");
+  messageFlush();
+  delay(5000);
 }

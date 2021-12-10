@@ -145,7 +145,7 @@ public class MainGUI extends AppGUI {
             updateClock();
 //            parseCritical();
             try {
-                Thread.sleep(50);
+                Thread.sleep(200);
             } catch (InterruptedException ie) {
                 ie.printStackTrace();
             }
@@ -224,6 +224,7 @@ public class MainGUI extends AppGUI {
             public void actionPerformed(ActionEvent actionEvent) {
                 if (current_voltage != 120) {
                     if (start_stopButton.getText().equals("START")) {
+                        Pi.drive(1);
                         if (fixed_208 == false) {
                             current_voltage = 120;
                             button_120.setBackground(new Color(color.getRed() - 100, color.getGreen() - 50, color.getBlue() + 50));
@@ -238,6 +239,7 @@ public class MainGUI extends AppGUI {
                             }
                         }
                     } else {
+                        Pi.drive(2);
                         if (voltageThreshold.toString().equals("")) {
                             voltageThreshold.setLength(0);
                             voltageThreshold.append(" WARNING: Cannot modify the voltage source when EMMA is active. Please press the \"STOP\" button first.");
@@ -303,9 +305,9 @@ public class MainGUI extends AppGUI {
     }
 
     protected JPanel getFrequencyThresholdPanel() {
-        max_frequency = 50;
-        current_frequency = 40;
-        min_frequency = 25;
+        max_frequency = 128;
+        current_frequency = 100;
+        min_frequency = 1;
         frequencyThreshold = new StringBuilder("");
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
@@ -314,7 +316,7 @@ public class MainGUI extends AppGUI {
 
         setConstraints(constraints, 0, 0, GridBagConstraints.LAST_LINE_END);
         JPanel maxPanel = new JPanel();
-        JLabel maxLabel = new JLabel(max_frequency + "kHz");
+        JLabel maxLabel = new JLabel(max_frequency + "");
 //        maxPanel.setPreferredSize(new Dimension(
 //                (int) (maxPanel.getPreferredSize().getWidth() * 1),
 //                (int) (maxPanel.getPreferredSize().getHeight() * 1.15)
@@ -325,7 +327,7 @@ public class MainGUI extends AppGUI {
 
         setConstraints(constraints, 0, 1, GridBagConstraints.LAST_LINE_END);
         JPanel currentPanel = new JPanel();
-        JLabel currentLabel = new JLabel(current_frequency + "kHz");
+        JLabel currentLabel = new JLabel(current_frequency + "");
 //        currentPanel.setPreferredSize(new Dimension(
 //                    (int) (currentPanel.getPreferredSize().getWidth() * 1),
 //                    (int) (currentPanel.getPreferredSize().getHeight() * 1.15)
@@ -336,7 +338,7 @@ public class MainGUI extends AppGUI {
 
         setConstraints(constraints, 0, 2, GridBagConstraints.LAST_LINE_END);
         JPanel minPanel = new JPanel();
-        JLabel minLabel = new JLabel(min_frequency + "kHz");
+        JLabel minLabel = new JLabel(min_frequency + "");
 //        minPanel.setPreferredSize(new Dimension(
 //                    (int) (minPanel.getPreferredSize().getWidth() * 1),
 //                    (int) (minPanel.getPreferredSize().getHeight() * 1.15)
@@ -356,15 +358,21 @@ public class MainGUI extends AppGUI {
                     increase.setBackground(new Color(color.getRed() - 100, color.getGreen() - 50, color.getBlue() + 50));
                     increase.repaint();
                     if (current_frequency < max_frequency) {
-                        current_frequency++;
-                        currentLabel.setText(current_frequency + "kHz");
+                        Pi.drive(3);
+                        try {
+                            Thread.sleep(300);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        current_frequency = current_frequency + 1;
+                        currentLabel.setText(current_frequency + "");
                         currentLabel.repaint();
                     }
-                    try {
-                        Thread.sleep(0);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+//                    try {
+//                        Thread.sleep(0);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
                     increase.setBackground(color);
                     increase.repaint();
                 } else {
@@ -403,15 +411,21 @@ public class MainGUI extends AppGUI {
                     decrease.setBackground(new Color(color.getRed() - 100, color.getGreen() - 50, color.getBlue() + 50));
                     decrease.repaint();
                     if (current_frequency > min_frequency) {
-                        current_frequency--;
-                        currentLabel.setText(current_frequency + "kHz");
+                        Pi.drive(4);
+                        try {
+                            Thread.sleep(300);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        current_frequency = current_frequency - 1;
+                        currentLabel.setText(current_frequency + "");
                         currentLabel.repaint();
                     }
-                    try {
-                        Thread.sleep(0);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+//                    try {
+//                        Thread.sleep(0);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
                     decrease.setBackground(color);
                     decrease.repaint();
                 } else {
@@ -511,11 +525,11 @@ public class MainGUI extends AppGUI {
                         }
                     }
                 }
-                try {
-                    Thread.sleep(0);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    Thread.sleep(0);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
                 increase.setBackground(color);
                 increase.repaint();
             }
@@ -540,11 +554,11 @@ public class MainGUI extends AppGUI {
                         }
                     }
                 }
-                try {
-                    Thread.sleep(0);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    Thread.sleep(0);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
                 decrease.setBackground(color);
                 decrease.repaint();
             }
@@ -1102,17 +1116,56 @@ public class MainGUI extends AppGUI {
             public void actionPerformed(ActionEvent actionEvent) {
                 switch (start_stopButton.getText()) {
                     case ("START") : {
-                        start_stopButton.setText("STOP");
-                        start_stopButton.setBackground(Color.RED);
-                        start_stopButton.repaint();
-                        break;
+//                        Thread t = new Thread(new Runnable() {
+//
+//                            @Override
+//                            public void run() {
+//                                while (true) {
+//                                    UART.writeUART("ESH;");
+//                                    if (ActionScreen.enable_set_low.get() == 0) {
+//                                        break;
+//                                    }
+//                                    try {
+//                                        Thread.sleep(500);
+//                                    } catch (InterruptedException e) {
+//                                        e.printStackTrace();
+//                                    }
+//                                }
+                                updateConsole("[ WARNING ] POWER IS ON");
+                                Pi.drive(1);
+                                start_stopButton.setText("STOP");
+                                start_stopButton.setBackground(Color.RED);
+                                start_stopButton.repaint();
+                                return;
+//                            }
+//                        }, "t");
+
                     }
 
                     case ("STOP") : {
-                        start_stopButton.setText("START");
-                        start_stopButton.setBackground(Color.GREEN);
-                        start_stopButton.repaint();
-                        break;
+//                        Thread t = new Thread(new Runnable() {
+//
+//                            @Override
+//                            public void run() {
+//                                while (true) {
+//                                    UART.writeUART("ESL;");
+//                                    if (ActionScreen.enable_set_low.get() == 1) {
+//                                        break;
+//                                    }
+//                                    try {
+//                                        Thread.sleep(500);
+//                                    } catch (InterruptedException e) {
+//                                        e.printStackTrace();
+//                                    }
+//                                }
+                                updateConsole("[ WARNING ] POWER IS OFF");
+                                Pi.drive(2);
+                                start_stopButton.setText("START");
+                                start_stopButton.setBackground(Color.GREEN);
+                                start_stopButton.repaint();
+                                return;
+//                            }
+//                        }, "t");
                     }
                 }
             }
@@ -1159,6 +1212,7 @@ public class MainGUI extends AppGUI {
                     }
                 }, "Shutdown Thread");
 //                spamShutDownThread.start();
+                Pi.drive(5);
                 closeThreadWindow();
                 AppGUI.launchActionScreen("DISCHARGE");
 //                try {
